@@ -2,25 +2,20 @@
 
 using namespace std;
 using namespace boost::asio;
-using boost::asio::ip::tcp;
 
 int main(int argc, char* argv[]){
 	RandomPlayer lRand;
 	std::string name = "XYZ";
   	try{
-		boost::asio::ip::tcp::iostream socket;
+		ip::tcp::iostream socket;
 		socket.connect("localhost", "8123");
-		string acknowledge("START ");
-		acknowledge += name;
-		acknowledge += "\n";
+		std::string acknowledge = "START " + name + "\n";
 		socket << acknowledge;
 		cout << "Waiting to Start..." << endl;
 		int lPlayerID = -1;
-		string playerName;
+		std::string playerName;
+		socket.ignore(16, ' ');
 		socket >> playerName;
-		cout << playerName << endl;
-		socket >> playerName;
-		cout << playerName << endl;
 		if(playerName.compare("Player1") == 0){
 			lPlayerID = 1;
 		}
@@ -28,12 +23,12 @@ int main(int argc, char* argv[]){
 			lPlayerID = 2;
 		}
 		cout << "Playing as Player " << lPlayerID << endl;
-		bool isOver = false;
 		cout << "Waiting for Server" << endl;
+		bool isOver = false;
     		while( ! isOver){
 			std::string lMessage;
 			socket >> lMessage;
-			cout << "Proccessing: " << lMessage << " |" << endl;
+			//cout << "Proccessing: " << lMessage << " |" << endl;
 			if(boost::starts_with(lMessage,"PLAY")){
 				socket >> lMessage;
 				cout << "PLAY MOVE: " << lMessage << endl;
@@ -42,7 +37,7 @@ int main(int argc, char* argv[]){
 			else if(boost::starts_with(lMessage, "GAMEOVER")){
 				socket >> lMessage;
 				socket >> lMessage;
-				cout << "GAME OVER! Winner is: " << lMessage << endl;
+				cout << "GAME OVER!" << endl << "Winner is: " << lMessage << endl;
 				isOver = true;
 				break;
 			}
@@ -74,7 +69,7 @@ Point processPoint(boost::asio::ip::tcp::iostream& lStream){
 	return Point(x,y);
 }
 
-int sendMove(boost::asio::ip::tcp::iostream& socket, int playerid, const Point& p){
+int sendMove(ip::tcp::iostream& socket, int playerid, const Point& p){
 	std::stringstream lStream;
 	lStream << noskipws << playerid << " " << p.x + p.y << " " << p.y << endl;
 	string lOut = lStream.str();
