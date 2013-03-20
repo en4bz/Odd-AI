@@ -17,7 +17,6 @@
 #include "Player.hpp"
 #include "RandomPlayer.hpp"
 
-int sendMove(boost::asio::ip::tcp::socket&, int , const Point&);
-Point processPoint(const std::string&);
-std::string processHeader(const std::string&);
+int sendMove(boost::asio::ip::tcp::iostream&, int , const Point&);
+Point processPoint(boost::asio::ip::tcp::iostream&);
 #endif
