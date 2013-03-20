@@ -16,7 +16,7 @@ int main(int argc, char* argv[]){
 		std::string playerName;
 		socket.ignore(16, ' ');
 		socket >> playerName;
-		if(playerName.compare("Player1") == 0){
+		if(playerName == "Player1"){
 			lPlayerID = 1;
 		}
 		else{
@@ -29,23 +29,23 @@ int main(int argc, char* argv[]){
 			std::string lMessage;
 			socket >> lMessage;
 			//cout << "Proccessing: " << lMessage << " |" << endl;
-			if(boost::starts_with(lMessage,"PLAY")){
+			if(lMessage == "PLAY"){
 				socket >> lMessage;
 				cout << "PLAY MOVE: " << lMessage << endl;
 			        sendMove(socket, lPlayerID, lRand.move());
 			}
-			else if(boost::starts_with(lMessage, "GAMEOVER")){
+			else if(lMessage == "GAMEOVER"){
 				socket >> lMessage;
 				socket >> lMessage;
 				cout << "GAME OVER!" << endl << "Winner is: " << lMessage << endl;
 				isOver = true;
 				break;
 			}
-			else if(lMessage.compare("1") == 0){
+			else if(lMessage == "1"){
 		                Point last = processPoint(socket);
 				lRand.updateBoard(last, Board::VALUE::WHITE);
 			}
-			else if(lMessage.compare("2") == 0){
+			else if(lMessage  == "2"){
 		                Point last = processPoint(socket);
 				lRand.updateBoard(last, Board::VALUE::BLACK);
 			}
