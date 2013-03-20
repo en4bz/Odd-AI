@@ -9,7 +9,7 @@ Main : main.hpp main.cpp Board.o RandomPlayer.o
 RandomPlayer.o : RandomPlayer.hpp RandomPlayer.cpp Player.o
 	g++ -c $(STD) $(OPT) $(CC_FLAGS) RandomPlayer.cpp
 
-Player.o : Player.hpp Player.cpp Board.o
+Player.o : Player.hpp Player.cpp Board.o Move.hpp
 	g++ -c $(STD) $(OPT) $(CC_FLAGS) Player.cpp
 
 Board.o : Board.hpp Board.cpp Point.o

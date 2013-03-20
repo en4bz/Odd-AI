@@ -5,11 +5,13 @@
 #include <iostream>
 #include <boost/asio.hpp>
 
+#include "Move.hpp"
 #include "Point.hpp"
 #include "Board.hpp"
 #include "Player.hpp"
 #include "RandomPlayer.hpp"
 
-int 	sendMove(boost::asio::ip::tcp::iostream&, int , const Point&);
-Point 	processPoint(boost::asio::ip::tcp::iostream&);
+void 	sendMove(boost::asio::ip::tcp::iostream&, int , const Point&, Board::VALUE);
+Move 	processMove(boost::asio::ip::tcp::iostream&);
+Point	processPoint(boost::asio::ip::tcp::iostream&);
 #endif

@@ -32,7 +32,7 @@ int main(int argc, char* argv[]){
 			if(lMessage == "PLAY"){
 				socket >> lMessage;
 				cout << "PLAY MOVE: " << lMessage << endl;
-			        sendMove(socket, lPlayerID, lRand.move());
+			        sendMove(socket, lPlayerID, lRand.move(), Board::VALUE::BLACK);
 			}
 			else if(lMessage == "GAMEOVER"){
 				socket >> lMessage;
@@ -42,12 +42,12 @@ int main(int argc, char* argv[]){
 				break;
 			}
 			else if(lMessage == "1"){
-		                Point last = processPoint(socket);
-				lRand.updateBoard(last, Board::VALUE::WHITE);
+		                Move last = processMove(socket);
+				lRand.updateBoard(last.place, Board::VALUE::BLACK);
 			}
 			else if(lMessage  == "2"){
-		                Point last = processPoint(socket);
-				lRand.updateBoard(last, Board::VALUE::BLACK);
+		                Move last = processMove(socket);
+				lRand.updateBoard(last.place, Board::VALUE::BLACK);
 			}
 		}
 		socket.close();
@@ -60,6 +60,21 @@ int main(int argc, char* argv[]){
   	return 0;
 }
 
+Move processMove(boost::asio::ip::tcp::iostream& lStream){
+	std::string lColour;
+	lStream >> lColour;
+	int x,y;
+	lStream >> x;
+	lStream >> y;
+	x -= y;//Transate To My Coordinate System.
+	if(lColour == "WHITE"){
+		return Move(Point(x,y), Board::VALUE::WHITE);
+	}
+	else{
+		return Move(Point(x,y), Board::VALUE::BLACK);
+	}
+}
+
 Point processPoint(boost::asio::ip::tcp::iostream& lStream){
 	int x,y;
 	lStream >> x;
@@ -69,11 +84,7 @@ Point processPoint(boost::asio::ip::tcp::iostream& lStream){
 	return Point(x,y);
 }
 
-int sendMove(ip::tcp::iostream& socket, int playerid, const Point& p){
-	std::stringstream lStream;
-	lStream << noskipws << playerid << " " << p.x + p.y << " " << p.y << endl;
-	string lOut = lStream.str();
-	cout << "Transmiting: " << lOut;
-	socket << lOut;
-	return 0;
+void sendMove(ip::tcp::iostream& socket, int playerid, const Point& p, Board::VALUE colour){
+	socket << playerid << " " << "BLACK" << " "  << p.x + p.y << " " << p.y << endl;
+	return;
 }

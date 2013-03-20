@@ -6,6 +6,7 @@
 #include <vector>
 #include <ostream>
 #include <iostream>
+#include <algorithm>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -24,6 +25,7 @@ public:
     VALUE& at(int px, int py);
     VALUE& at(const Point& p);
     VALUE& operator[](const Point& p);
+    std::vector<Point> getNeighboursOfColour(const Point& p, VALUE colour);
     std::vector<Point> getNeighbours(const Point& p) const;
     std::vector<Point> freeSpaces(void) const;
     STATE boardState(void) const;

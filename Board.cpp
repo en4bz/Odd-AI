@@ -34,6 +34,13 @@ Board::VALUE& Board::operator[](const Point& p){
     return this->mBoard[p];
 }
 
+std::vector<Point> Board::getNeighboursOfColour(const Point& p, Board::VALUE colour){
+	std::vector<Point> lNeighbours = this->getNeighbours(p);
+	auto lNewEnd = std::remove_if(lNeighbours.begin(), lNeighbours.end(), [this, p](Point a){ return this->mBoard[p] == this->mBoard[a];});
+	lNeighbours.erase(lNewEnd, lNeighbours.end());
+	return lNeighbours;
+}
+
 std::vector<Point> Board::getNeighbours(const Point& p) const{
     std::vector<Point> lReturn;
 	try{
