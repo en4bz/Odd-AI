@@ -9,6 +9,6 @@ class RandomPlayer : public Player{
 private:
 	std::mt19937 mRandom;
 public:
-    Point move(void);
+    	Move move(void);
 };
 #endif

@@ -11,8 +11,7 @@ protected:
 	Board mCurrentState;
 public:
     int roundNumber(void) const;
-    void updateBoard(const Point& newPoint, Board::VALUE);
     void updateBoard(const Move& m);
-    virtual Point move(void) = 0;
+    virtual Move move(void) = 0;
 };
 #endif
