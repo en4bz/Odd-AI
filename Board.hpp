@@ -26,7 +26,7 @@ public:
     VALUE& at(const Point& p);
     VALUE& operator[](const Point& p);
     std::vector<Point> getNeighboursOfColour(const Point& p, VALUE colour);
-    std::vector<Point> getNeighbours(const Point& p) const;
+    static std::vector<Point> getNeighbours(const Point& p);
     std::vector<Point> freeSpaces(void) const;
     STATE boardState(void) const;
 

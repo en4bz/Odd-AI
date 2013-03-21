@@ -41,7 +41,7 @@ std::vector<Point> Board::getNeighboursOfColour(const Point& p, Board::VALUE col
 	return lNeighbours;
 }
 
-std::vector<Point> Board::getNeighbours(const Point& p) const{
+std::vector<Point> Board::getNeighbours(const Point& p){
     std::vector<Point> lReturn;
 	try{
         lReturn.emplace_back(Point(p.x - 1, p.y));
