@@ -82,7 +82,7 @@ std::vector<Point> Board::freeSpaces(void) const{
 
 Board::STATE Board::boardState(void) const{
 	#ifdef _BENCHMARK_
-	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+	Profiler lTimer("boardState(void): ");
 	#endif
 	int lBlackGroups = 0;
 	int lWhiteGroups = 0;
@@ -107,8 +107,7 @@ Board::STATE Board::boardState(void) const{
 		}
 	}
 	#ifdef _BENCHMARK_
-	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-	std::cout << "boardState(void) Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count() << std::endl;
+	std::cout << lTimer << std::endl;
 	#endif
 
 	return (lBlackGroups + lWhiteGroups) % 2 ? STATE::ODD : STATE::EVEN;

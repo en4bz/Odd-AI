@@ -7,7 +7,7 @@ LINK = -lboost_system -pthread
 ENABLE_BENCH =-D_BENCHMARK_
 
 Main : main.hpp main.cpp Board.o RandomPlayer.o
-	$(CC) -o Main $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) main.cpp Board.o Point.o RandomPlayer.o Player.o $(LINK)
+	$(CC) -o Main $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) main.cpp Board.o Point.o RandomPlayer.o Player.o Profiler.o $(LINK)
 
 RandomPlayer.o : RandomPlayer.hpp RandomPlayer.cpp Player.o
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) RandomPlayer.cpp
@@ -15,8 +15,11 @@ RandomPlayer.o : RandomPlayer.hpp RandomPlayer.cpp Player.o
 Player.o : Player.hpp Player.cpp Board.o Move.hpp
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) Player.cpp
 
-Board.o : Board.hpp Board.cpp Point.o
+Board.o : Board.hpp Board.cpp Point.o Profiler.o
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) $(ENABLE_BENCH) Board.cpp
+
+Profiler.o : Profiler.hpp Profiler.cpp
+	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) $(ENABLE_BENCH) Profiler.cpp
 
 Point.o : Point.hpp Point.cpp
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) Point.cpp

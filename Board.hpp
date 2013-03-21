@@ -2,7 +2,7 @@
 #define BOARD_HPP
 
 #ifdef _BENCHMARK_
-#include <chrono>
+#include "Profiler.hpp"
 #endif
 
 #include <list>
