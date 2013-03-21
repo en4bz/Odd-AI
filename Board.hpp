@@ -1,8 +1,14 @@
 #ifndef BOARD_HPP
 #define BOARD_HPP
 
+#ifdef _BENCHMARK_
+#include <chrono>
+#endif
+
 #include <list>
 #include <deque>
+#include <stack>
+#include <queue>
 #include <vector>
 #include <ostream>
 #include <iostream>
@@ -22,14 +28,15 @@ private:
     std::unordered_map<Point, VALUE, PointHasher> mBoard;
 public:
 	Board(void);
-    VALUE& at(int px, int py);
-    VALUE& at(const Point& p);
-    VALUE& operator[](const Point& p);
-    std::vector<Point> getNeighboursOfColour(const Point& p, VALUE colour);
-    static std::vector<Point> getNeighbours(const Point& p);
-    std::vector<Point> freeSpaces(void) const;
-    STATE boardState(void) const;
-
+	VALUE  at(int px, int py) const;
+	VALUE& at(int px, int py);
+	VALUE  operator[](const Point& p) const;
+	VALUE& operator[](const Point& p);
+	std::vector<Point> getNeighboursOfSameColour(const Point& p) const;
+	static std::vector<Point> getNeighbours(const Point& p);
+	std::vector<Point> freeSpaces(void) const;
+	STATE boardState(void) const;
+	int bfs(const Point&, std::unordered_set<Point, PointHasher>&) const;
 	friend std::ostream& operator <<(std::ostream& pStream, const Board& pBoard);
 };
 
