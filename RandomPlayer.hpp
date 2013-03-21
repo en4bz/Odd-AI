@@ -8,7 +8,9 @@
 class RandomPlayer : public Player{
 private:
 	std::mt19937 mRandom;
+	std::uniform_int_distribution<int> mColour;
 public:
+	RandomPlayer();
     	Move move(void);
 };
 #endif
