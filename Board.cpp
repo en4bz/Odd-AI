@@ -43,31 +43,20 @@ std::vector<Point> Board::getNeighboursOfColour(const Point& p, Board::VALUE col
 
 std::vector<Point> Board::getNeighbours(const Point& p){
     std::vector<Point> lReturn;
-	try{
+    if(abs(p.x - 1 + p.y) <= 4 || abs(p.x - 1) <= 4 || abs(p.y) <= 4)
         lReturn.emplace_back(Point(p.x - 1, p.y));
-	}
-    catch(BoardBoundsException e){}
-	try{
+    if(abs(p.x + p.y - 1) <= 4 || abs(p.x) <= 4 || abs(p.y - 1) <= 4)
         lReturn.emplace_back(Point(p.x, p.y - 1));
-	}
-    catch(BoardBoundsException e){}
-	try{
+    if(abs(p.x + 1 + p.y) <= 4 || abs(p.x + 1) <= 4 || abs(p.y) <= 4)
         lReturn.emplace_back(Point(p.x + 1, p.y));
-	}
-    catch(BoardBoundsException e){}
-	try{
+    if(abs(p.x + p.y + 1) <= 4 || abs(p.x) <= 4 || abs(p.y + 1) <= 4)
         lReturn.emplace_back(Point(p.x, p.y + 1));
-	}
-    catch(BoardBoundsException e){}
-	try{
+    if(abs(p.x + p.y) <= 4 || abs(p.x + 1) <= 4 || abs(p.y - 1) <= 4)
         lReturn.emplace_back(Point(p.x + 1, p.y - 1));
-	}
-    catch(BoardBoundsException e){}
-	try{
+    if(abs(p.x + p.y) <= 4 || abs(p.x - 1) <= 4 || abs(p.y + 1) <= 4)
         lReturn.emplace_back(Point(p.x - 1, p.y + 1));
-	}
-    catch(BoardBoundsException e){}
-	return lReturn;
+    std::cout << lReturn.size() << std::endl;
+    return lReturn;
 }
 
 
