@@ -64,7 +64,7 @@ std::vector<Point> Board::getNeighbours(const Point& p){
         lReturn.emplace_back(Point(p.x + 1, p.y - 1));
     if(abs(p.x + p.y) <= 4 && abs(p.x - 1) <= 4 && abs(p.y + 1) <= 4)
         lReturn.emplace_back(Point(p.x - 1, p.y + 1));
-    #ifdef _DEDUG_
+    #ifdef _DEBUG_
     std::cout << "# of Neigbours for " << p << " = " lReturn.size() << std::endl;
     #endif
     return lReturn;
@@ -111,7 +111,7 @@ Board::STATE Board::boardState(void) const{
 	std::cout << "boardState(void) Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count() << std::endl;
 	#endif
 
-	return (lBlackGroups = lWhiteGroups) % 2 ? STATE::ODD : STATE::EVEN;
+	return (lBlackGroups + lWhiteGroups) % 2 ? STATE::ODD : STATE::EVEN;
 }
 
 int Board::bfs(const Point& origin, std::unordered_set<Point, PointHasher>& pClosed) const{

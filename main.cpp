@@ -19,17 +19,27 @@ int main(int argc, char* argv[]){
 		if(playerName == "Player1"){
 			lPlayerID = 1;
 		}
-		else{
+		else if(playerName == "Player2"){
 			lPlayerID = 2;
 		}
+		else{
+			std::cout << "Server Error" << std::endl;
+			socket.close();
+			return 1;
+		}
+		#ifdef _DEBUG_
 		cout << "Playing as Player " << lPlayerID << endl;
 		cout << "Waiting for Server" << endl;
+		#endif
 		bool isOver = false;
     		while( ! isOver){
 			std::string lMessage;
 			socket >> lMessage;
-			//cout << "Proccessing: " << lMessage << " |" << endl;
+			#ifdef _DEBUG_
+			cout << "Proccessing: " << lMessage << " |" << endl;
+			#endif
 			if(lMessage == "PLAY"){
+				lRand.evaluateBoard();
 				socket >> lMessage;
 				//cout << "PLAY MOVE: " << lMessage << endl;
 			        sendMove(socket, lPlayerID, lRand.move());
@@ -51,6 +61,13 @@ int main(int argc, char* argv[]){
 			}
 		}
 		socket.close();
+		Board::STATE lState = lRand.evaluateBoard();
+		if(lState == Board::STATE::EVEN){
+			cout << "EVEN" << endl;
+		}
+		else{
+			cout << "ODD" << endl;
+		}
   	}
   	catch (std::exception& e)
   	{
