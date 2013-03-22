@@ -51,7 +51,7 @@ std::vector<Point> Board::getNeighboursOfSameColour(const Point& p) const{
 
 std::vector<Point> Board::getNeighbours(const Point& p){
     std::vector<Point> lReturn;
-    if( abs(p.x - 1 + p.y) <= 4 && abs(p.x - 1) <= 4 && abs(p.y) <= 4)
+    if(abs(p.x - 1 + p.y) <= 4 && abs(p.x - 1) <= 4 && abs(p.y) <= 4)
         lReturn.emplace_back(Point(p.x - 1, p.y));
     if(abs(p.x + p.y - 1) <= 4 && abs(p.x) <= 4 && abs(p.y - 1) <= 4)
         lReturn.emplace_back(Point(p.x, p.y - 1));
@@ -63,9 +63,6 @@ std::vector<Point> Board::getNeighbours(const Point& p){
         lReturn.emplace_back(Point(p.x + 1, p.y - 1));
     if(abs(p.x + p.y) <= 4 && abs(p.x - 1) <= 4 && abs(p.y + 1) <= 4)
         lReturn.emplace_back(Point(p.x - 1, p.y + 1));
-    #ifdef _DEBUG_
-    std::cout << "# of Neigbours for " << p << " = " lReturn.size() << std::endl;
-    #endif
     return lReturn;
 }
 
@@ -79,6 +76,46 @@ std::vector<Point> Board::freeSpaces(void) const{
 	return lFree;
 }
 
+std::vector<Point>* Board::freeSpacesP(void) const{
+    std::vector<Point>* lFree = new std::vector<Point>;//Possible keep move counter so we can reserve space
+    for(auto& kv : this->mBoard){
+        if(kv.second == VALUE::EMPTY)
+            lFree->emplace_back(kv.first);
+    }
+	return lFree;
+}
+
+Board::STATE Board::boardStateEnd(void) const{
+    #ifdef _BENCHMARK_
+    Profiler lTimer("boardState(void): ");
+    #endif
+    int lBlackGroups = 0;
+    int lWhiteGroups = 0;
+    std::unordered_set<Point, PointHasher> lClosed;
+    for(int i = -4; i <= 4; i++){
+        for(int j = -4; j <= 4; j++){
+                if(abs(i + j) > 4 || abs(i) > 4 || abs(j) > 4){
+                continue;
+            }
+            Point lCurrent (i,j);
+            if(lClosed.find(lCurrent) != lClosed.end()){
+                continue;
+            }
+            else{
+                int lSize = bfs(lCurrent, lClosed);
+                if(lSize >= 5){
+                    ((*this)[lCurrent] == VALUE::BLACK) ? lBlackGroups++ : lWhiteGroups++;
+                }
+            }
+        }
+    }
+    #ifdef _BENCHMARK_
+    std::cout << lTimer << std::endl;
+    #endif
+
+    return (lBlackGroups + lWhiteGroups) % 2 ? STATE::ODD : STATE::EVEN;
+}
+
 Board::STATE Board::boardState(void) const{
 	#ifdef _BENCHMARK_
 	Profiler lTimer("boardState(void): ");
@@ -86,8 +123,8 @@ Board::STATE Board::boardState(void) const{
 	int lBlackGroups = 0;
 	int lWhiteGroups = 0;
    	std::unordered_set<Point, PointHasher> lClosed;
-	std::vector<Point> lFree = this->freeSpaces();
-	lClosed.insert(lFree.begin(), lFree.end());
+	std::vector<Point>* lFree = this->freeSpacesP();
+	lClosed.insert(lFree->begin(), lFree->end());
 	for(int i = -4; i <= 4; i++){
 		for(int j = -4; j <= 4; j++){
 	        	if(abs(i + j) > 4 || abs(i) > 4 || abs(j) > 4){

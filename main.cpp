@@ -3,9 +3,10 @@
 using namespace std;
 using namespace boost::asio;
 
-static std::string name = "XYZ";
 
 int main(int argc, char* argv[]){
+	std::string name = "XYZ";
+//	std::fstream stats("stats.out", fstream::out | fstream::app);
   	try{
 		ip::tcp::iostream socket;
 		socket.connect("localhost", "8123");
@@ -27,10 +28,7 @@ int main(int argc, char* argv[]){
 			return 1;
 		}
 		MCPlayer lRand(lPlayerID);;
-		#ifdef _DEBUG_
 		cout << "Playing as Player " << lPlayerID << endl;
-		cout << "Waiting for Server" << endl;
-		#endif
 		bool isOver = false;
     		while( ! isOver){
 			std::string lMessage;
@@ -39,42 +37,44 @@ int main(int argc, char* argv[]){
 			cout << "Proccessing: " << lMessage << " |" << endl;
 			#endif
 			if(lMessage == "PLAY"){
-				lRand.evaluateBoard();
 				socket >> lMessage;
-				//cout << "PLAY MOVE: " << lMessage << endl;
-			        sendMove(socket, lPlayerID, lRand.move());
+				Profiler lMoveTime("Executed Move in: ");
+				sendMove(socket, lPlayerID, lRand.move());
+				cout << lMoveTime << endl;
 			}
 			else if(lMessage == "GAMEOVER"){
 				socket >> lMessage;
 				socket >> lMessage;
 				cout << "GAME OVER!" << endl << "Winner is: " << lMessage << endl;
+				if(lMessage == playerName){
+					cout << "Win" << endl;
+//					stats << "Win" << endl;
+				}
+				else{
+					cout << "Lose" << endl;
+//					stats << "Win" << endl;
+				}
 				isOver = true;
 				break;
 			}
 			else if(lMessage == "1"){
-		                Move lLast = processMove(socket);
+		        Move lLast = processMove(socket);
 				lRand.updateBoard(lLast);
 			}
 			else if(lMessage  == "2"){
-		                Move lLast = processMove(socket);
+				Move lLast = processMove(socket);
 				lRand.updateBoard(lLast);
 			}
 		}
 		socket.close();
-		Board::STATE lState = lRand.evaluateBoard();
-		if(lState == Board::STATE::EVEN){
-			cout << "EVEN" << endl;
-		}
-		else{
-			cout << "ODD" << endl;
-		}
   	}
   	catch (std::exception& e)
   	{
 		cerr << e.what() << endl;
 		return 1;
   	}
-	cout << "Terminating..." << endl;
+//	stats.close();
+//	cout << "Terminating..." << endl;
   	return 0;
 }
 

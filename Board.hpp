@@ -5,9 +5,6 @@
 #include "Profiler.hpp"
 #endif
 
-#include <list>
-#include <deque>
-#include <stack>
 #include <queue>
 #include <vector>
 #include <ostream>
@@ -36,7 +33,9 @@ public:
 	std::vector<Point> getNeighboursOfSameColour(const Point& p) const;
 	static std::vector<Point> getNeighbours(const Point& p);
 	std::vector<Point> freeSpaces(void) const;
+	std::vector<Point>* freeSpacesP(void) const;
 	STATE boardState(void) const;
+	STATE boardStateEnd(void) const;//Only use when we know there are no free spaces left, saves call to freeSpaces()
 	int bfs(const Point&, std::unordered_set<Point, PointHasher>&) const;
 	friend std::ostream& operator <<(std::ostream& pStream, const Board& pBoard);
 };

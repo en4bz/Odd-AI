@@ -1,9 +1,9 @@
 CC = g++-4.8
 STD = -std=c++11
-OPT = -O0
+OPT = -O3
 CC_FLAGS = -Wall -msse2
 LINK = -lboost_system -pthread
-ENABLE_DEBUG =-D_DEBUG_ -g
+#ENABLE_DEBUG =-D_DEBUG_ -g
 #ENABLE_BENCH =-D_BENCHMARK_
 
 Main : main.hpp main.cpp Board.o RandomPlayer.o MCPlayer.o

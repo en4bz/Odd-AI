@@ -4,8 +4,9 @@ MCPlayer::MCPlayer(int pID) : Player(pID) {}
 
 Move MCPlayer::move(void){
 	std::vector<Move> lMoves;
-	lMoves.reserve(2*this->movesLeft());
-	for(Point& p : this->mCurrentState.freeSpaces()){
+	lMoves.reserve(2*this->movesLeft());//Possibly Broken Under GCC 4.7
+	std::vector<Point>* lFree = this->mCurrentState.freeSpacesP();//Pointer is faster
+	for(const Point& p : *lFree){
 		lMoves.emplace_back(Move(p, Board::VALUE::WHITE));
 		lMoves.emplace_back(Move(p, Board::VALUE::BLACK));
 	}
@@ -33,18 +34,19 @@ Move MCPlayer::move(void){
 			lMaxIndex = i;
 		}
 	}
+	delete lFree;//Accept a pointer and return this so we can delete while waiting?
 	return lMoves[lMaxIndex];
 }
 
-std::future<int> MCPlayer::dispatchSimulation(const Move& pAction){
-	auto lDispatch = new std::packaged_task<int(int,int,Board)>(&MCPlayer::simulation);
-	Board lNewBoard = this->mCurrentState;//Place on Heap?
+std::future<int> MCPlayer::dispatchSimulation(Move pAction){
+	std::packaged_task<int(int,int,Board)> lDispatch(&MCPlayer::simulation);
+	Board lNewBoard = this->mCurrentState;
 	lNewBoard[pAction.place] = pAction.colour;
-	std::future<int> lReturn = lDispatch->get_future();
 	#ifdef _DEBUG_
 	std::cout << "Displatching " << std::endl;
 	#endif
-	std::thread(std::move(*lDispatch), this->mID, this->mEntropy(), lNewBoard).detach();
+	std::future<int> lReturn = lDispatch.get_future();
+	std::thread(std::move(lDispatch), this->mID, this->mEntropy(), lNewBoard).detach();
 	return lReturn;
 }
 
@@ -76,5 +78,5 @@ Board::STATE MCPlayer::simulateMatch(Board initial, std::mt19937& pRandom){
 		Point p = lMoves[index];
 		initial[p] = (pRandom() % 2) ? Board::BLACK : Board::WHITE;
 	}
-	return initial.boardState();
+	return initial.boardStateEnd();//We know there are no free spaces at this point.
 }
