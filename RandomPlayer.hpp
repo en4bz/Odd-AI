@@ -10,7 +10,7 @@ private:
 	std::mt19937 mRandom;
 	std::uniform_int_distribution<int> mColour;
 public:
-	RandomPlayer();
-    	Move move(void);
+	RandomPlayer(int pID);
+   	Move move(void);
 };
 #endif

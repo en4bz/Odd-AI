@@ -4,14 +4,22 @@
 #include <future>
 #include <thread>
 #include <random>
+#include <iostream>
 
+#include "Player.hpp"
+#include "Point.hpp"
 #include "Board.hpp"
 
-class MCPlayer : Player{
+class MCPlayer : public Player{
 public:
-    static int SIMULATIONS_PER_DISPATCH = 1000;
-    std::future<int> simulateGames(const Board& initialState, VALUE winningState, long seed);
-    Board::VALUE simulateSingleMatch(Board initial) const;
+	static constexpr int SIMULATIONS_PER_DISPATCH = 10;
+private:
+	std::random_device mEntropy;
+public:
+	MCPlayer(int);
+	Move move(void);
+	std::future<int> dispatchSimulation(const Move& pAction);
+	static int simulation(int pID, int pSeed, Board b);
+	static Board::STATE simulateMatch(Board initial, std::mt19937&);
 };
-
 #endif

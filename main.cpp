@@ -6,7 +6,6 @@ using namespace boost::asio;
 static std::string name = "XYZ";
 
 int main(int argc, char* argv[]){
-	RandomPlayer lRand;
   	try{
 		ip::tcp::iostream socket;
 		socket.connect("localhost", "8123");
@@ -27,6 +26,7 @@ int main(int argc, char* argv[]){
 			socket.close();
 			return 1;
 		}
+		MCPlayer lRand(lPlayerID);;
 		#ifdef _DEBUG_
 		cout << "Playing as Player " << lPlayerID << endl;
 		cout << "Waiting for Server" << endl;

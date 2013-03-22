@@ -1,6 +1,6 @@
 #include "RandomPlayer.hpp"
 
-RandomPlayer::RandomPlayer(){
+RandomPlayer::RandomPlayer(int pID) : Player(pID){
 	this->mColour = std::uniform_int_distribution<int>(0,1);
 }
 

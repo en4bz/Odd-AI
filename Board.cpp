@@ -41,7 +41,6 @@ Board::VALUE Board::operator[](const Point& p) const{
     return this->mBoard.find(p)->second;
 }
 
-
 std::vector<Point> Board::getNeighboursOfSameColour(const Point& p) const{
 	const VALUE lColour= (*this)[p];
 	std::vector<Point> lNeighbours = this->getNeighbours(p);

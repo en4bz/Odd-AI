@@ -16,9 +16,10 @@
 #include <unordered_map>
 #include <unordered_set>
 
-
 #include "Point.hpp"
 #include "BoardBoundsException.hpp"
+
+struct Move;
 
 class Board{
 public:
@@ -41,4 +42,10 @@ public:
 };
 
 std::ostream& operator <<(std::ostream& pStream, const Board& pBoard);
+
+struct Move{
+	Point place;
+	Board::VALUE colour;
+	Move(const Point& p, Board::VALUE v) : place(p), colour(v) {}
+};
 #endif

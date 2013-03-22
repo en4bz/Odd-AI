@@ -1,5 +1,5 @@
-#ifndef MOVE_HPP
-#define MOVE_HPP
+#ifndef ODD_MOVE_HPP
+#define ODD_MOVE_HPP
 
 #include "Point.hpp"
 #include "Board.hpp"
