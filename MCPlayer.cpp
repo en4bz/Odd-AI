@@ -3,16 +3,11 @@
 MCPlayer::MCPlayer(int pID) : Player(pID) {}
 
 Move MCPlayer::move(void){
-	std::vector<Move> lMoves;
-	std::vector<Point> lFree = this->mCurrentState.freeSpaces();//Pointer is faster
+	std::vector<Move> lMoves = this->mCurrentState.validMoves();
 	std::vector<std::future<int>> lResults;
-	lMoves.reserve(lFree.size() << 2);
-	lResults.reserve(lFree.size() << 2);
-	for(const Point& p : lFree){
-		lMoves.emplace_back(Move(p, Board::VALUE::WHITE));
-		lResults.emplace_back( dispatchSimulation(lMoves.back()));
-		lMoves.emplace_back(Move(p, Board::VALUE::BLACK));
-		lResults.emplace_back( dispatchSimulation(lMoves.back()));
+	lResults.reserve(lMoves.size());
+	for(const Move m : lMoves){
+		lResults.emplace_back(dispatchSimulation(m));
 	}
 	#ifdef _DEBUG_
 	std::cout << "Completed Displatches " << std::endl;
@@ -20,9 +15,6 @@ Move MCPlayer::move(void){
 	int lMaxIndex = 0;
 	int lMaxValue = 0;
 	for(uint32_t i = 0; i < lResults.size(); i++){
-		#ifdef _DEBUG_
-		std::cout << "Searching" << std::endl;
-		#endif
 		int lTemp = lResults[i].get();
 		if(lTemp > lMaxValue){
 			lMaxValue = lTemp;

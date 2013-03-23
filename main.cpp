@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
 			return 1;
 		}
 		MCPlayer lRand(lPlayerID);
-		cout << "Playing as Player " << lPlayerName << endl;
+		cout << "Playing as " << lPlayerName << endl;
 		bool isOver = false;
 		while( ! isOver){
 			std::string lMessage;

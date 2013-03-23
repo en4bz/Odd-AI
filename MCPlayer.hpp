@@ -13,7 +13,7 @@
 
 class MCPlayer : public Player{
 public:
-	static constexpr int SIMULATIONS_PER_DISPATCH = 150;
+	static constexpr int SIMULATIONS_PER_DISPATCH = 160;
 private:
 	std::random_device mEntropy;
 public:

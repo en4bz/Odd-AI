@@ -71,6 +71,23 @@ std::vector<Point> Board::freeSpaces(void) const{
 	return lFree;
 }
 
+std::vector<Move> Board::validMoves(void) const{
+    std::vector<Move> lMoves;
+    for(int i = -4; i <= 4; i++){
+        for(int j = -4; j <= 4; j++){
+			if(abs(i + j) > 4 || abs(i) > 4 || abs(j) > 4){
+                continue;
+            }
+			Point p = Point(i,j);
+			if(this->mBoard.find(p) == this->mBoard.end()){
+				lMoves.emplace_back(Move(p, VALUE::BLACK));
+				lMoves.emplace_back(Move(p, VALUE::WHITE));
+			}
+		}
+    }
+	return lMoves;
+}
+
 Board::STATE Board::boardStateEnd(void) const{
     #ifdef _BENCHMARK_
     Profiler lTimer("boardStateEnd(void): ");
