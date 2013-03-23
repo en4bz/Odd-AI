@@ -5,20 +5,20 @@ using namespace boost::asio;
 
 
 int main(int argc, char* argv[]){
-	std::string name = "XYZ";
   	try{
+		std::string lName = "XYZ";
 		ip::tcp::iostream socket;
 		socket.connect("localhost", "8123");
-		socket << "START " << name << endl;
 		cout << "Waiting to Start..." << endl;//Acknowledge
+		socket << "START " << lName << endl;
 		int lPlayerID = -1;
-		std::string playerName;
+		std::string lPlayerName;
 		socket.ignore(16, ' ');
-		socket >> playerName;
-		if(playerName == "Player1"){
+		socket >> lPlayerName;
+		if(lPlayerName == "Player1"){
 			lPlayerID = 1;
 		}
-		else if(playerName == "Player2"){
+		else if(lPlayerName == "Player2"){
 			lPlayerID = 2;
 		}
 		else{
@@ -36,27 +36,28 @@ int main(int argc, char* argv[]){
 			cout << "Proccessing: " << lMessage << " |" << endl;
 			#endif
 			if(lMessage == "PLAY"){
-				socket.ignore(16,' ');
 				Profiler lMoveTime("Executed Move in: ");
 				sendMove(socket, lPlayerID, lRand.move());
+				socket.ignore(16,' ');//Empty socket after playing.
 				cout << lMoveTime << endl;
 			}
+			else if(lMessage == "1" || lMessage == "2"){
+		        Move lLast = processMove(socket);
+				lRand.updateBoard(lLast);
+			}
 			else if(lMessage == "GAMEOVER"){
+				cout << lMessage << " ";
 				socket >> lMessage;
+				cout << lMessage;
 				socket >> lMessage;
-				cout << "GAME OVER!" << endl << "Winner is: " << lMessage << endl;
-				if(lMessage == playerName){
+				cout << lMessage << " " << endl;
+				if(lMessage == lPlayerName){
 					cout << "Win" << endl;
 				}
 				else{
 					cout << "Lose" << endl;
 				}
 				isOver = true;
-				break;
-			}
-			else if(lMessage == "1" || lMessage == "2"){
-		        Move lLast = processMove(socket);
-				lRand.updateBoard(lLast);
 			}
 		}
 		socket.close();
@@ -84,10 +85,10 @@ Move processMove(ip::tcp::iostream& lStream){
 
 void sendMove(ip::tcp::iostream& socket, int playerid, const Move& move){
 	if(move.colour == Board::VALUE::WHITE){
-		socket << playerid << " " << "WHITE" << " "  << move.place.x + move.place.y << " " << move.place.y << endl;
+		socket << playerid << " WHITE " << move.place.x + move.place.y << " " << move.place.y << endl;
 	}
 	else{
-		socket << playerid << " " << "BLACK" << " "  << move.place.x + move.place.y << " " << move.place.y << endl;
+		socket << playerid << " BLACK " << move.place.x + move.place.y << " " << move.place.y << endl;
 	}
 	return;
 }
