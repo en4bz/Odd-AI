@@ -13,32 +13,12 @@ Board::Board(void){
 	}
 }
 
-Board::VALUE& Board::at(int px, int py){
-    if(abs(px + py) > 4 || abs(px) > 4 || abs(py) > 4){
-        throw BoardBoundsException(px, py);
-    }
-    return this->mBoard[Point(px,py)];
-}
-
-Board::VALUE Board::at(int px, int py) const{
-    if(abs(px + py) > 4 || abs(px) > 4 || abs(py) > 4){
-        throw BoardBoundsException(px, py);
-    }
-    return (*this)[Point(px,py)];
-}
-
 Board::VALUE& Board::operator[](const Point& p){
-    if(abs(p.x + p.y) > 4 || abs(p.x) > 4 || abs(p.y) > 4){
-        throw BoardBoundsException(p.x, p.y);
-    }
-    return this->mBoard[p];
+    return this->mBoard[p];//No Bounds checking as it is done in Point.
 }
 
 Board::VALUE Board::operator[](const Point& p) const{
-    if(abs(p.x + p.y) > 4 || abs(p.x) > 4 || abs(p.y) > 4){
-        throw BoardBoundsException(p.x, p.y);
-    }
-    return this->mBoard.find(p)->second;
+    return this->mBoard.find(p)->second;//No Bounds checking as it is done in Point.
 }
 
 std::vector<Point> Board::getNeighboursOfSameColour(const Point& p) const{
@@ -69,7 +49,7 @@ std::vector<Point> Board::getNeighbours(const Point& p){
 
 std::vector<Point> Board::freeSpaces(void) const{
     std::vector<Point> lFree;
-    for(auto& kv : this->mBoard){
+    for(const auto& kv : this->mBoard){
         if(kv.second == VALUE::EMPTY)
             lFree.emplace_back(kv.first);
     }
@@ -78,7 +58,7 @@ std::vector<Point> Board::freeSpaces(void) const{
 
 std::vector<Point>* Board::freeSpacesP(void) const{
     std::vector<Point>* lFree = new std::vector<Point>;//Possible keep move counter so we can reserve space
-    for(auto& kv : this->mBoard){
+    for(const auto& kv : this->mBoard){
         if(kv.second == VALUE::EMPTY)
             lFree->emplace_back(kv.first);
     }
@@ -87,14 +67,14 @@ std::vector<Point>* Board::freeSpacesP(void) const{
 
 Board::STATE Board::boardStateEnd(void) const{
     #ifdef _BENCHMARK_
-    Profiler lTimer("boardState(void): ");
+    Profiler lTimer("boardStateEnd(void): ");
     #endif
     int lBlackGroups = 0;
     int lWhiteGroups = 0;
     std::unordered_set<Point, PointHasher> lClosed;
     for(int i = -4; i <= 4; i++){
         for(int j = -4; j <= 4; j++){
-                if(abs(i + j) > 4 || abs(i) > 4 || abs(j) > 4){
+			if(abs(i + j) > 4 || abs(i) > 4 || abs(j) > 4){
                 continue;
             }
             Point lCurrent (i,j);
@@ -158,7 +138,7 @@ int Board::bfs(const Point& origin, std::unordered_set<Point, PointHasher>& pClo
 		Point lCurrent = lOpen.front();
 		lOpen.pop();
 		pClosed.insert(lCurrent);
-		for(Point& p : getNeighboursOfSameColour(lCurrent)){
+		for(const Point& p : getNeighboursOfSameColour(lCurrent)){
 			if(pClosed.find(p) == pClosed.end()){
 				lOpen.push(p);
 				pClosed.insert(p);

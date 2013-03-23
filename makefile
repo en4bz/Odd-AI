@@ -1,7 +1,7 @@
 CC = g++-4.8
 STD = -std=c++11
-OPT = -O3
-CC_FLAGS = -Wall -msse2
+OPT = -Ofast -msse2
+CC_FLAGS = -Wall -g
 LINK = -lboost_system -pthread
 #ENABLE_DEBUG =-D_DEBUG_ -g
 #ENABLE_BENCH =-D_BENCHMARK_

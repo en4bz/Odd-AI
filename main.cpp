@@ -6,7 +6,6 @@ using namespace boost::asio;
 
 int main(int argc, char* argv[]){
 	std::string name = "XYZ";
-//	std::fstream stats("stats.out", fstream::out | fstream::app);
   	try{
 		ip::tcp::iostream socket;
 		socket.connect("localhost", "8123");
@@ -27,17 +26,17 @@ int main(int argc, char* argv[]){
 			socket.close();
 			return 1;
 		}
-		MCPlayer lRand(lPlayerID);;
+		MCPlayer lRand(lPlayerID);
 		cout << "Playing as Player " << lPlayerID << endl;
 		bool isOver = false;
-    		while( ! isOver){
+		while( ! isOver){
 			std::string lMessage;
 			socket >> lMessage;
 			#ifdef _DEBUG_
 			cout << "Proccessing: " << lMessage << " |" << endl;
 			#endif
 			if(lMessage == "PLAY"){
-				socket >> lMessage;
+				socket.ignore(16,' ');
 				Profiler lMoveTime("Executed Move in: ");
 				sendMove(socket, lPlayerID, lRand.move());
 				cout << lMoveTime << endl;
@@ -48,33 +47,25 @@ int main(int argc, char* argv[]){
 				cout << "GAME OVER!" << endl << "Winner is: " << lMessage << endl;
 				if(lMessage == playerName){
 					cout << "Win" << endl;
-//					stats << "Win" << endl;
 				}
 				else{
 					cout << "Lose" << endl;
-//					stats << "Win" << endl;
 				}
 				isOver = true;
 				break;
 			}
-			else if(lMessage == "1"){
+			else if(lMessage == "1" || lMessage == "2"){
 		        Move lLast = processMove(socket);
-				lRand.updateBoard(lLast);
-			}
-			else if(lMessage  == "2"){
-				Move lLast = processMove(socket);
 				lRand.updateBoard(lLast);
 			}
 		}
 		socket.close();
   	}
-  	catch (std::exception& e)
-  	{
+  	catch (std::exception& e){
 		cerr << e.what() << endl;
 		return 1;
   	}
-//	stats.close();
-//	cout << "Terminating..." << endl;
+	cout << "Terminating..." << endl;
   	return 0;
 }
 

@@ -4,27 +4,22 @@ MCPlayer::MCPlayer(int pID) : Player(pID) {}
 
 Move MCPlayer::move(void){
 	std::vector<Move> lMoves;
-	lMoves.reserve(2*this->movesLeft());//Possibly Broken Under GCC 4.7
-	std::vector<Point>* lFree = this->mCurrentState.freeSpacesP();//Pointer is faster
-	for(const Point& p : *lFree){
+	std::vector<Point> lFree = this->mCurrentState.freeSpaces();//Pointer is faster
+	std::vector<std::future<int>> lResults;
+	lMoves.reserve(lFree.size());//Possibly Broken Under GCC 4.7
+	lResults.reserve(lFree.size());
+	for(const Point& p : lFree){
 		lMoves.emplace_back(Move(p, Board::VALUE::WHITE));
+		lResults.emplace_back( dispatchSimulation(lMoves.back()));
 		lMoves.emplace_back(Move(p, Board::VALUE::BLACK));
-	}
-	int lNumMoves = lMoves.size();//Should equal 2*movesLeft(). Replace for optimization.
-	std::future<int> lResults[lNumMoves];
-	for(int i = 0; i < lNumMoves; i++){
-		#ifdef _DEBUG_
-//		static int xyz = 0;
-//		std::cout << "Displatched " << ++xyz << " States." << std::endl;
-		#endif
-		lResults[i] = dispatchSimulation(lMoves[i]);
+		lResults.emplace_back( dispatchSimulation(lMoves.back()));
 	}
 	#ifdef _DEBUG_
 	std::cout << "Completed Displatches " << std::endl;
 	#endif
 	int lMaxIndex = 0;
 	int lMaxValue = 0;
-	for(int i = 0; i < lNumMoves; i++){
+	for(unsigned int i = 0; i < lResults.size(); i++){
 		#ifdef _DEBUG_
 		std::cout << "Searching" << std::endl;
 		#endif
@@ -34,7 +29,6 @@ Move MCPlayer::move(void){
 			lMaxIndex = i;
 		}
 	}
-	delete lFree;//Accept a pointer and return this so we can delete while waiting?
 	return lMoves[lMaxIndex];
 }
 

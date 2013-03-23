@@ -26,8 +26,6 @@ private:
     std::unordered_map<Point, VALUE, PointHasher> mBoard;
 public:
 	Board(void);
-	VALUE  at(int px, int py) const;
-	VALUE& at(int px, int py);
 	VALUE  operator[](const Point& p) const;
 	VALUE& operator[](const Point& p);
 	std::vector<Point> getNeighboursOfSameColour(const Point& p) const;
