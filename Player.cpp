@@ -12,7 +12,7 @@ int Player::movesLeft(void) const{
 
 void Player::updateBoard(const Move& v){
     this->mRound++;
-    this->mCurrentState[v.place] = v.colour;
+    this->mCurrentState.update(v);
 }
 
 Board::STATE Player::evaluateBoard(void) const{

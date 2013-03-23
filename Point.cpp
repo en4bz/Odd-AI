@@ -2,7 +2,7 @@
 
 Point::Point(int px, int py){
 	if((abs(px + py)) > 4 || (abs(px)) > 4 || (abs(py)) > 4){
-        throw BoardBoundsException(px,py);
+		throw BoardBoundsException(px,py);
 	}
 	else{
 		this->x = px;

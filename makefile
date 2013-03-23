@@ -26,7 +26,7 @@ Board.o : Board.hpp Board.cpp Point.o Profiler.o
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) $(ENABLE_BENCH) Board.cpp
 
 Profiler.o : Profiler.hpp Profiler.cpp
-	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) $(ENABLE_BENCH) Profiler.cpp
+	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) Profiler.cpp
 
 Point.o : Point.hpp Point.cpp
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) Point.cpp

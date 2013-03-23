@@ -32,10 +32,10 @@ Move MCPlayer::move(void){
 	return lMoves[lMaxIndex];
 }
 
-std::future<int> MCPlayer::dispatchSimulation(Move pAction){
+std::future<int> MCPlayer::dispatchSimulation(const Move& pAction){
 	std::packaged_task<int(int,int,Board)> lDispatch(&MCPlayer::simulation);
 	Board lNewBoard = this->mCurrentState;
-	lNewBoard[pAction.place] = pAction.colour;
+	lNewBoard.update(pAction.place, pAction.colour);
 	#ifdef _DEBUG_
 	std::cout << "Displatching " << std::endl;
 	#endif
@@ -73,7 +73,7 @@ Board::STATE MCPlayer::simulateMatch(Board initial, __gnu_cxx::sfmt607& pRandom,
 	while((lMoves = initial.freeSpaces()).size() > 0){
 		uint32_t lIndex = pRandom() % lMoves.size();//Not Valid
 		Point p = lMoves[lIndex];
-		initial[p] = pSelector(pRandom) ?  Board::BLACK : Board::WHITE;
+		initial.update(p, pSelector(pRandom) ?  Board::BLACK : Board::WHITE);
 	}
 	return initial.boardStateEnd();//We know there are no free spaces at this point.
 }
