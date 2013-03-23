@@ -6,8 +6,8 @@ Move MCPlayer::move(void){
 	std::vector<Move> lMoves;
 	std::vector<Point> lFree = this->mCurrentState.freeSpaces();//Pointer is faster
 	std::vector<std::future<int>> lResults;
-	lMoves.reserve(lFree.size());//Possibly Broken Under GCC 4.7
-	lResults.reserve(lFree.size());
+	lMoves.reserve(lFree.size() << 2);
+	lResults.reserve(lFree.size() << 2);
 	for(const Point& p : lFree){
 		lMoves.emplace_back(Move(p, Board::VALUE::WHITE));
 		lResults.emplace_back( dispatchSimulation(lMoves.back()));
@@ -19,7 +19,7 @@ Move MCPlayer::move(void){
 	#endif
 	int lMaxIndex = 0;
 	int lMaxValue = 0;
-	for(unsigned int i = 0; i < lResults.size(); i++){
+	for(uint32_t i = 0; i < lResults.size(); i++){
 		#ifdef _DEBUG_
 		std::cout << "Searching" << std::endl;
 		#endif
@@ -45,16 +45,19 @@ std::future<int> MCPlayer::dispatchSimulation(Move pAction){
 }
 
 
-int MCPlayer::simulation(int pID, int seed, Board pStart){
+int MCPlayer::simulation(int pID, int pSeed, Board pStart){
 	Board::STATE lGoal;
 	if(pID == 1)
 		lGoal = Board::STATE::ODD;
 	else
 		lGoal = Board::STATE::EVEN;
-	std::mt19937 lGen(seed);
+
+	__gnu_cxx::sfmt607 lGen(pSeed);
+	std::uniform_int_distribution<int> lSelector(0,1);
+//	std::mt19937 lGen(seed);
 	int lWins = 0;
     for(int i = 0; i < SIMULATIONS_PER_DISPATCH; i++){
-		if(lGoal == simulateMatch(pStart, lGen)){
+		if(lGoal == simulateMatch(pStart, lGen, lSelector)){
 			lWins++;
 		}
     }
@@ -65,12 +68,12 @@ int MCPlayer::simulation(int pID, int seed, Board pStart){
 }
 
 //Push onto stack so we can mutate board.
-Board::STATE MCPlayer::simulateMatch(Board initial, std::mt19937& pRandom){
+Board::STATE MCPlayer::simulateMatch(Board initial, __gnu_cxx::sfmt607& pRandom, std::uniform_int_distribution<int>& pSelector){
 	std::vector<Point> lMoves;
 	while((lMoves = initial.freeSpaces()).size() > 0){
-		int index = pRandom() % lMoves.size();//Not Valid
-		Point p = lMoves[index];
-		initial[p] = (pRandom() % 2) ? Board::BLACK : Board::WHITE;
+		uint32_t lIndex = pRandom() % lMoves.size();//Not Valid
+		Point p = lMoves[lIndex];
+		initial[p] = pSelector(pRandom) ?  Board::BLACK : Board::WHITE;
 	}
 	return initial.boardStateEnd();//We know there are no free spaces at this point.
 }

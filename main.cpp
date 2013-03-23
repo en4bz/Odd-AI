@@ -48,7 +48,7 @@ int main(int argc, char* argv[]){
 			else if(lMessage == "GAMEOVER"){
 				cout << lMessage << " ";
 				socket >> lMessage;
-				cout << lMessage;
+				cout << lMessage << " ";
 				socket >> lMessage;
 				cout << lMessage << " " << endl;
 				if(lMessage == lPlayerName){

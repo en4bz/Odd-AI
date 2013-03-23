@@ -1,6 +1,6 @@
-CC = g++-4.7
+CC = g++-4.8
 STD = -std=c++11
-OPT = -Ofast -msse2 -ffast-math -march=native
+OPT = -O2 -msse2 -ffast-math -march=native
 CC_FLAGS = -Wall
 LINK = -lboost_system -pthread
 #ENABLE_DEBUG =-D_DEBUG_ -g

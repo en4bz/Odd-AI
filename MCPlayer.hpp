@@ -4,15 +4,16 @@
 #include <future>
 #include <thread>
 #include <random>
+#include <ext/random>
 #include <iostream>
 
-#include "Player.hpp"
 #include "Point.hpp"
 #include "Board.hpp"
+#include "Player.hpp"
 
 class MCPlayer : public Player{
 public:
-	static constexpr int SIMULATIONS_PER_DISPATCH = 128;
+	static constexpr int SIMULATIONS_PER_DISPATCH = 100;
 private:
 	std::random_device mEntropy;
 public:
@@ -20,6 +21,6 @@ public:
 	Move move(void);
 	std::future<int> dispatchSimulation(Move pAction);
 	static int simulation(int pID, int pSeed, Board b);
-	static Board::STATE simulateMatch(Board initial, std::mt19937&);
+	static Board::STATE simulateMatch(Board initial, __gnu_cxx::sfmt607&, std::uniform_int_distribution<int>& );
 };
 #endif
