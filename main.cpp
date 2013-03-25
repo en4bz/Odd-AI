@@ -50,7 +50,7 @@ int main(int argc, char* argv[]){
 				socket >> lMessage;
 				cout << lMessage << " ";
 				socket >> lMessage;
-				cout << lMessage << " " << endl;
+				cout << lMessage << endl;
 				if(lMessage == lPlayerName){
 					cout << "Win" << endl;
 				}

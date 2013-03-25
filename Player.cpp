@@ -1,6 +1,6 @@
 #include "Player.hpp"
 
-Player::Player(int pID) : mID(pID) {}
+Player::Player(int pID) : mID(pID), mGoal(pID == 1 ? Board::STATE::ODD : Board::STATE::EVEN) {}
 
 int Player::roundNumber(void) const{
 	return this->mRound;
@@ -13,8 +13,4 @@ int Player::movesLeft(void) const{
 void Player::updateBoard(const Move& v){
     this->mRound++;
     this->mCurrentState.update(v);
-}
-
-Board::STATE Player::evaluateBoard(void) const{
-	return this->mCurrentState.boardState();
 }

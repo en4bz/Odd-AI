@@ -13,14 +13,14 @@
 
 class MCPlayer : public Player{
 public:
-	static constexpr int SIMULATIONS_PER_DISPATCH = 160;
+	static constexpr int SIMULATIONS_PER_DISPATCH = 150;
 private:
 	std::random_device mEntropy;
 public:
 	MCPlayer(int);
 	Move move(void);
 	std::future<int> dispatchSimulation(const Move& pAction);
-	static int simulation(int pID, int pSeed, Board b);
+	static int simulation(const Board::STATE pGoal, int pSeed, Board b);
 	static Board::STATE simulateMatch(Board initial, __gnu_cxx::sfmt607&, std::uniform_int_distribution<int>& );
 };
 #endif

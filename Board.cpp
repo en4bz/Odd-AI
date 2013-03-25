@@ -109,7 +109,6 @@ Board::STATE Board::boardStateEnd(void) const{
     #ifdef _BENCHMARK_
     std::cout << lTimer << std::endl;
     #endif
-
     return (lBlackGroups + lWhiteGroups) & 0x00000001 ? STATE::ODD : STATE::EVEN;
 }
 
@@ -136,7 +135,7 @@ Board::STATE Board::boardState(void) const{
     #ifdef _BENCHMARK_
     std::cout << lTimer << std::endl;
     #endif
-    return (lBlackGroups + lWhiteGroups) % 2 ? STATE::ODD : STATE::EVEN;
+    return (lBlackGroups + lWhiteGroups) & 0x00000001 ? STATE::ODD : STATE::EVEN;
 }
 
 int Board::bfs(const Point& origin, std::unordered_set<Point, PointHasher>& pClosed) const{
@@ -171,4 +170,3 @@ std::ostream& operator<< (std::ostream& pStream, const Board& pBoard){
     }
 	return pStream;
 }
-

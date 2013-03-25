@@ -8,6 +8,7 @@
 class Player{
 protected:
 	const int mID;
+	const Board::STATE mGoal;
 	int mRound;
 	Board mCurrentState;
 public:
@@ -15,7 +16,6 @@ public:
     int roundNumber(void) const;
     int movesLeft(void) const;
     void updateBoard(const Move& m);
-    Board::STATE evaluateBoard(void) const;
     virtual Move move(void) = 0;
 };
 #endif

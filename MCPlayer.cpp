@@ -6,12 +6,9 @@ Move MCPlayer::move(void){
 	std::vector<Move> lMoves = this->mCurrentState.validMoves();
 	std::vector<std::future<int>> lResults;
 	lResults.reserve(lMoves.size());
-	for(const Move m : lMoves){
+	for(const Move& m : lMoves){
 		lResults.emplace_back(dispatchSimulation(m));
 	}
-	#ifdef _DEBUG_
-	std::cout << "Completed Displatches " << std::endl;
-	#endif
 	int lMaxIndex = 0;
 	int lMaxValue = 0;
 	for(uint32_t i = 0; i < lResults.size(); i++){
@@ -25,31 +22,25 @@ Move MCPlayer::move(void){
 }
 
 std::future<int> MCPlayer::dispatchSimulation(const Move& pAction){
-	std::packaged_task<int(int,int,Board)> lDispatch(&MCPlayer::simulation);
+	std::packaged_task<int(Board::STATE,int,Board)> lDispatch(&MCPlayer::simulation);
 	Board lNewBoard = this->mCurrentState;
 	lNewBoard.update(pAction.place, pAction.colour);
 	#ifdef _DEBUG_
-	std::cout << "Displatching " << std::endl;
+	std::cout << "Dispatching " << std::endl;
 	#endif
 	std::future<int> lReturn = lDispatch.get_future();
-	std::thread(std::move(lDispatch), this->mID, this->mEntropy(), lNewBoard).detach();
+	std::thread(std::move(lDispatch), this->mGoal, this->mEntropy(), lNewBoard).detach();
 	return lReturn;
 }
 
 
-int MCPlayer::simulation(int pID, int pSeed, Board pStart){
-	Board::STATE lGoal;
-	if(pID == 1)
-		lGoal = Board::STATE::ODD;
-	else
-		lGoal = Board::STATE::EVEN;
-
+int MCPlayer::simulation(const Board::STATE pGoal, int pSeed, Board pStart){
 	__gnu_cxx::sfmt607 lGen(pSeed);
 	std::uniform_int_distribution<int> lSelector(0,1);
 //	std::mt19937 lGen(seed);
 	int lWins = 0;
     for(int i = 0; i < SIMULATIONS_PER_DISPATCH; i++){
-		if(lGoal == simulateMatch(pStart, lGen, lSelector)){
+		if(pGoal == MCPlayer::simulateMatch(pStart, lGen, lSelector)){
 			lWins++;
 		}
     }
