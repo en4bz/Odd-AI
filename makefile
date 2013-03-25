@@ -1,14 +1,21 @@
 CC = g++-4.8
 STD = -std=c++11
-OPT = -O1 -msse2 -ffast-math -march=native
+OPT = -O3 -march=native
 CC_FLAGS = -Wall
 LINK = -lboost_system -pthread
 #ENABLE_DEBUG =-D_DEBUG_ -g
 #ENABLE_BENCH =-D_BENCHMARK_
 
-Main : main.hpp main.cpp Board.o RandomPlayer.o MCPlayer.o #UCBPlayer.o #NegaScout.o
-	$(CC) -o Main $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) main.cpp \
-	Board.o Point.o Profiler.o Player.o MCPlayer.o RandomPlayer.o $(LINK)
+
+HybridPlayer : main.hpp main.cpp Board.o MCPlayer.o NegaScout.o Hybrid.o
+	$(CC) -o Hybrid $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) -DHYBRIDPLAYER main.cpp \
+	Board.o Point.o Profiler.o Player.o MCPlayer.o NegaScout.o Hybrid.o $(LINK)
+
+MCPlayer : main.hpp main.cpp Board.o MCPlayer.o
+	$(CC) -o MCPlayer $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) -DMCPLAYER main.cpp Board.o Point.o Profiler.o Player.o MCPlayer.o $(LINK)
+
+Hybrid.o : Hybrid.hpp Hybrid.cpp Player.o MCPlayer.o NegaScout.o
+	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) Hybrid.cpp Player.o
 
 NegaScout.o : NegaScout.hpp NegaScout.cpp Player.o
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) NegaScout.cpp
@@ -35,4 +42,4 @@ Point.o : Point.hpp Point.cpp
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) Point.cpp
 
 clean :
-	rm *\.o Main
+	rm *\.o

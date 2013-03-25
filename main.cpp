@@ -26,7 +26,18 @@ int main(int argc, char* argv[]){
 			socket.close();
 			return 1;
 		}
-		MCPlayer lRand(lPlayerID);
+		#ifdef RANDOM
+		RandomPlayer lPlayer(lPlayerID);
+		#endif
+		#ifdef MONTECARLO
+		MCPlayer lPlayer(lPlayerID);
+		#endif
+		#ifdef UCB
+		UCBPlayer lPlayer(lPlayerID);
+		#endif
+		#ifdef HYBRIDPLAYER
+		Hybrid lPlayer(lPlayerID);
+		#endif
 		cout << "Playing as " << lPlayerName << endl;
 		bool isOver = false;
 		while( ! isOver){
@@ -37,13 +48,13 @@ int main(int argc, char* argv[]){
 			#endif
 			if(lMessage == "PLAY"){
 				Profiler lMoveTime("Executed Move in: ");
-				sendMove(socket, lPlayerID, lRand.move());
+				sendMove(socket, lPlayerID, lPlayer.move());
 				socket.ignore(16,' ');//Empty socket after playing.
 				cout << lMoveTime << endl;
 			}
 			else if(lMessage == "1" || lMessage == "2"){
 		        Move lLast = processMove(socket);
-				lRand.updateBoard(lLast);
+				lPlayer.updateBoard(lLast);
 			}
 			else if(lMessage == "GAMEOVER"){
 				cout << lMessage << " ";

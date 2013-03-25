@@ -3,7 +3,7 @@
 MCPlayer::MCPlayer(int pID) : Player(pID) {}
 
 Move MCPlayer::move(void){
-	std::vector<Move> lMoves = this->mCurrentState.validMoves();
+	std::vector<Move> lMoves = std::move(this->mCurrentState.validMoves());
 	std::vector<std::future<int>> lResults;
 	lResults.reserve(lMoves.size());
 	for(const Move& m : lMoves){
@@ -53,7 +53,7 @@ int MCPlayer::simulation(const Board::STATE pGoal, int pSeed, Board pStart){
 //Push onto stack so we can mutate board.
 Board::STATE MCPlayer::simulateMatch(Board initial, __gnu_cxx::sfmt607& pRandom, std::uniform_int_distribution<int>& pSelector){
 	std::vector<Point> lMoves;
-	while((lMoves = initial.freeSpaces()).size() > 0){
+	while((lMoves = (initial.freeSpaces())).size() > 0){
 		uint32_t lIndex = pRandom() % lMoves.size();//Not Valid
 		Point p = lMoves[lIndex];
 		initial.update(p, pSelector(pRandom) ?  Board::BLACK : Board::WHITE);

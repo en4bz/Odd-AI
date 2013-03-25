@@ -25,6 +25,7 @@ public:
 private:
     std::unordered_map<Point, VALUE, PointHasher> mBoard;
 public:
+	Board(void){this->mBoard.reserve(31);}
 	void update(const Move&);
 	void update(const Point&, VALUE);
 	std::vector<Point> getNeighboursOfSameColour(const Point& p) const;
