@@ -4,11 +4,12 @@
 #include <chrono>
 #include <string>
 #include <iostream>
+#include <boost/timer/timer.hpp>
 
 class Profiler{
 private:
 	const std::string mMessage;
-	const std::chrono::high_resolution_clock::time_point mStart;
+	boost::timer::auto_cpu_timer t;
 public:
 	Profiler(const std::string);
 	friend std::ostream& operator<< (std::ostream&, const Profiler&);
