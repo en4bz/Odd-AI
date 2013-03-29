@@ -70,6 +70,28 @@ std::vector<Point> Board::freeSpaces(void) const{
 	return lFree;
 }
 
+std::vector<Move> Board::samplePath(int pSeed) const{
+	std::vector<Move> lMoves;
+	std::mt19937 lGen(pSeed);
+	std::uniform_int_distribution<int> lWB(0,1);
+	for(int i = -4; i <= 4; i++){
+		for(int j = -4; j <= 4; j++){
+			if(abs(i + j) > 4 || abs(i) > 4 || abs(j) > 4){
+                continue;
+            }
+			const Point& p = Point(i,j);
+			if(this->mBoard.find(p) == this->mBoard.end()){
+				if(lWB(lGen) == 0)
+					lMoves.emplace_back(Move(p, VALUE::BLACK));
+				else
+					lMoves.emplace_back(Move(p, VALUE::WHITE));
+			}
+		}
+    }
+	std::shuffle(lMoves.begin(),lMoves.end(), lGen);
+	return lMoves;
+}
+
 std::vector<Move> Board::validMoves(void) const{
     std::vector<Move> lMoves;
     for(int i = -4; i <= 4; i++){
@@ -91,6 +113,7 @@ Board::STATE Board::boardStateEnd(void) const{
     #ifdef _BENCHMARK_
     Profiler lTimer("boardStateEnd(void): ");
     #endif
+	assert(this->mBoard.size() == 61);
     int lBlackGroups = 0;
     int lWhiteGroups = 0;
     std::unordered_set<Point, PointHasher> lClosed;

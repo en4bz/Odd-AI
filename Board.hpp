@@ -5,6 +5,7 @@
 #include "Profiler.hpp"
 #endif
 
+#include <cassert>
 #include <queue>
 #include <vector>
 #include <ostream>
@@ -12,6 +13,8 @@
 #include <algorithm>
 #include <unordered_map>
 #include <unordered_set>
+#include <random>
+#include <algorithm>
 
 #include "Point.hpp"
 #include "BoardBoundsException.hpp"
@@ -31,6 +34,7 @@ public:
 	std::vector<Point> getNeighboursOfSameColour(const Point& p) const;
 	static std::vector<Point> getNeighbours(const Point& p);
 	std::vector<Point> freeSpaces(void) const;
+	std::vector<Move> samplePath(int) const;
 	std::vector<Move> validMoves(void) const;
 	STATE boardState(void) const;
 	STATE boardStateEnd(void) const;//Only use when we know there are no free spaces left, saves call to freeSpaces()

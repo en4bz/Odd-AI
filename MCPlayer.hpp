@@ -13,7 +13,7 @@
 
 class MCPlayer : public Player{
 public:
-	static constexpr int SIMULATIONS_PER_DISPATCH = 160;
+	static constexpr int SIMULATIONS_PER_DISPATCH = 384;
 private:
 	std::random_device mEntropy;
 public:
@@ -21,6 +21,6 @@ public:
 	Move move(void);
 	std::future<int> dispatchSimulation(const Move& pAction);
 	static int simulation(const Board::STATE pGoal, int pSeed, Board b);
-	static Board::STATE simulateMatch(Board initial, __gnu_cxx::sfmt607&, std::uniform_int_distribution<int>& );
+	static Board::STATE simulateMatch(Board initial, int);
 };
 #endif

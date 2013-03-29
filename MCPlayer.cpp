@@ -32,27 +32,21 @@ std::future<int> MCPlayer::dispatchSimulation(const Move& pAction){
 
 
 int MCPlayer::simulation(const Board::STATE pGoal, int pSeed, Board pStart){
-	__gnu_cxx::sfmt607 lGen(pSeed);
-	std::uniform_int_distribution<int> lSelector(0,1);
-//	std::mt19937 lGen(seed);
+	std::random_device lGen;
 	int lWins = 0;
     for(int i = 0; i < SIMULATIONS_PER_DISPATCH; i++){
-		if(pGoal == MCPlayer::simulateMatch(pStart, lGen, lSelector)){
+		if(pGoal == MCPlayer::simulateMatch(pStart, lGen())){
 			lWins++;
 		}
     }
-	#ifdef _DEBUG_
-	std::cout << "Completed Simulation" << std::endl;
-	#endif
 	return lWins;
 }
 
-//Push onto stack so we can mutate board.
-Board::STATE MCPlayer::simulateMatch(Board initial, __gnu_cxx::sfmt607& pRandom, std::uniform_int_distribution<int>& pSelector){
-	std::vector<Point> lMoves;
-	while((lMoves = (initial.freeSpaces())).size() > 0){
-		const Point& p = lMoves[pRandom() % lMoves.size()];//Not Uniform?
-		initial.update(p, pSelector(pRandom) == 0 ? Board::BLACK : Board::WHITE);
+Board::STATE MCPlayer::simulateMatch(Board initial, int pSeed){
+	const std::vector<Move> lMoves =  initial.samplePath(pSeed);
+	for(const Move& m : lMoves){
+		initial.update(m);
 	}
-	return initial.boardStateEnd();//We know there are no free spaces at this point.
+	return initial.boardStateEnd();
 }
+
