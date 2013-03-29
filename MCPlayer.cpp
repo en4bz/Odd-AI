@@ -1,9 +1,9 @@
 #include "MCPlayer.hpp"
 
-MCPlayer::MCPlayer(int pID) : Player(pID) {}
+MCPlayer::MCPlayer(int pID, Board* const pBoard) : Player(pID, pBoard) {}
 
 Move MCPlayer::move(void){
-	std::vector<Move> lMoves = std::move(this->mCurrentState.validMoves());
+	const std::vector<Move>& lMoves = this->mCurrentState->validMoves();
 	std::vector<std::future<int>> lResults;
 	lResults.reserve(lMoves.size());
 	for(const Move& m : lMoves){
@@ -12,7 +12,7 @@ Move MCPlayer::move(void){
 	int lMaxIndex = 0;
 	int lMaxValue = 0;
 	for(uint32_t i = 0; i < lResults.size(); i++){
-		int lTemp = lResults[i].get();
+		const int lTemp = lResults[i].get();
 		if(lTemp > lMaxValue){
 			lMaxValue = lTemp;
 			lMaxIndex = i;
@@ -23,11 +23,8 @@ Move MCPlayer::move(void){
 
 std::future<int> MCPlayer::dispatchSimulation(const Move& pAction){
 	std::packaged_task<int(Board::STATE,int,Board)> lDispatch(&MCPlayer::simulation);
-	Board lNewBoard = this->mCurrentState;
-	lNewBoard.update(pAction.place, pAction.colour);
-	#ifdef _DEBUG_
-	std::cout << "Dispatching " << std::endl;
-	#endif
+	Board lNewBoard(*(this->mCurrentState));
+	lNewBoard.update(pAction);
 	std::future<int> lReturn = lDispatch.get_future();
 	std::thread(std::move(lDispatch), this->mGoal, this->mEntropy(), lNewBoard).detach();
 	return lReturn;
@@ -54,9 +51,8 @@ int MCPlayer::simulation(const Board::STATE pGoal, int pSeed, Board pStart){
 Board::STATE MCPlayer::simulateMatch(Board initial, __gnu_cxx::sfmt607& pRandom, std::uniform_int_distribution<int>& pSelector){
 	std::vector<Point> lMoves;
 	while((lMoves = (initial.freeSpaces())).size() > 0){
-		uint32_t lIndex = pRandom() % lMoves.size();//Not Valid
-		Point p = lMoves[lIndex];
-		initial.update(p, pSelector(pRandom) ?  Board::BLACK : Board::WHITE);
+		const Point& p = lMoves[pRandom() % lMoves.size()];//Not Uniform?
+		initial.update(p, pSelector(pRandom) == 0 ? Board::BLACK : Board::WHITE);
 	}
 	return initial.boardStateEnd();//We know there are no free spaces at this point.
 }

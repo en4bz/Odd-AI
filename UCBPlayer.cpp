@@ -5,7 +5,7 @@ UCBPlayer::UCBPlayer(int pID) : Player(pID) {}
 Move UCBPlayer::move(void){
 	std::vector<UCBNode> lNodes;
 	std::vector<std::future<int>> lResults;
-	for(const Move& m : this-mCurrentState.validMoves()){
+	for(const Move& m : this->mCurrentState.validMoves()){
 		lNodes.emplace_back(UCBNode(m));
 		lResults.emplace_back(dispatchSimulation(m));
 	}

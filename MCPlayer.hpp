@@ -17,7 +17,7 @@ public:
 private:
 	std::random_device mEntropy;
 public:
-	MCPlayer(int);
+	MCPlayer(int, Board* const);
 	Move move(void);
 	std::future<int> dispatchSimulation(const Move& pAction);
 	static int simulation(const Board::STATE pGoal, int pSeed, Board b);
