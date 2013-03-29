@@ -25,7 +25,7 @@ public:
 private:
     std::unordered_map<Point, VALUE, PointHasher> mBoard;
 public:
-	Board(void){this->mBoard.reserve(31);}
+	Board(void);
 	void update(const Move&);
 	void update(const Point&, VALUE);
 	std::vector<Point> getNeighboursOfSameColour(const Point& p) const;
@@ -34,7 +34,8 @@ public:
 	std::vector<Move> validMoves(void) const;
 	STATE boardState(void) const;
 	STATE boardStateEnd(void) const;//Only use when we know there are no free spaces left, saves call to freeSpaces()
-	int bfs(const Point&, std::unordered_set<Point, PointHasher>&) const;
+	int connectedComponent(const Point&, std::unordered_set<Point, PointHasher>&) const;
+	int load(void) const;
 	friend std::ostream& operator <<(std::ostream& pStream, const Board& pBoard);
 };
 
@@ -44,5 +45,13 @@ struct Move{
 	Point place;
 	Board::VALUE colour;
 	Move(const Point& p, Board::VALUE v) : place(p), colour(v) {}
+	bool operator==(const Move& m) const{ return this->place == m.place && this->colour == m.colour;}
+	bool operator!=(const Move& m) const{ return this->place != m.place || this->colour != m.colour;}
+};
+
+struct MoveHasher{
+	size_t operator()(const Move& m) const{
+		return (m.place.y ^ (m.place.x << 4)) + m.colour * 5;
+	}
 };
 #endif

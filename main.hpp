@@ -2,10 +2,10 @@
 #define MAIN_HPP
 
 #include <string>
-#include <fstream>
 #include <iostream>
 #include <boost/asio.hpp>
 
+#include "AMAF.hpp"
 #include "Point.hpp"
 #include "Board.hpp"
 #include "Player.hpp"

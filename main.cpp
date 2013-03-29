@@ -6,7 +6,7 @@ using namespace boost::asio;
 
 int main(int argc, char* argv[]){
   	try{
-		std::string lName = "XYZ";
+		const std::string lName = "XYZ";
 		ip::tcp::iostream socket;
 		socket.connect("localhost", "8123");
 		cout << "Waiting to Start..." << endl;//Acknowledge
@@ -26,17 +26,21 @@ int main(int argc, char* argv[]){
 			socket.close();
 			return 1;
 		}
+		Board* const lGameBoard = new Board();
 		#ifdef RANDOM
 		RandomPlayer lPlayer(lPlayerID);
 		#endif
 		#ifdef MONTECARLO
-		MCPlayer lPlayer(lPlayerID);
+		MCPlayer lPlayer(lPlayerID, lGameBoard);
 		#endif
 		#ifdef UCB
 		UCBPlayer lPlayer(lPlayerID);
 		#endif
+		#ifdef _AMAF_
+		AMAFPlayer lPlayer(lPlayerID, lGameBoard);
+		#endif
 		#ifdef HYBRIDPLAYER
-		Hybrid lPlayer(lPlayerID);
+		Hybrid lPlayer(lPlayerID, lGameBoard);
 		#endif
 		cout << "Playing as " << lPlayerName << endl;
 		bool isOver = false;
@@ -47,14 +51,14 @@ int main(int argc, char* argv[]){
 			cout << "Proccessing: " << lMessage << " |" << endl;
 			#endif
 			if(lMessage == "PLAY"){
-				Profiler lMoveTime("Executed Move in: ");
+				std::cout << " Move :" << lPlayer.movesLeft() <<  " | ";
+				const Profiler lMoveTime("Executed Move in: ");
 				sendMove(socket, lPlayerID, lPlayer.move());
 				socket.ignore(16,' ');//Empty socket after playing.
-				cout << lMoveTime << endl;
+				cout << lMoveTime;
 			}
 			else if(lMessage == "1" || lMessage == "2"){
-		        Move lLast = processMove(socket);
-				lPlayer.updateBoard(lLast);
+				lPlayer.updateBoard(processMove(socket));
 			}
 			else if(lMessage == "GAMEOVER"){
 				cout << lMessage << " ";
@@ -71,6 +75,7 @@ int main(int argc, char* argv[]){
 				isOver = true;
 			}
 		}
+		delete lGameBoard;
 		socket.close();
   	}
   	catch (std::exception& e){
@@ -85,12 +90,11 @@ Move processMove(ip::tcp::iostream& lStream){
 	int x,y;
 	std::string lColour;
 	lStream >> lColour >> x >> y;
-	x -= y;//Transate To My Coordinate System.
 	if(lColour == "WHITE"){
-		return Move(Point(x,y), Board::VALUE::WHITE);
+		return Move(Point(x-y,y), Board::VALUE::WHITE);
 	}
 	else{
-		return Move(Point(x,y), Board::VALUE::BLACK);
+		return Move(Point(x-y,y), Board::VALUE::BLACK);
 	}
 }
 

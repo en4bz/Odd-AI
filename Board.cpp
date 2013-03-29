@@ -1,5 +1,9 @@
 #include "Board.hpp"
 
+Board::Board(void){
+	this->mBoard.reserve(43);
+}
+
 void Board::update(const Move& pNewMove){
 	this->mBoard[pNewMove.place] = pNewMove.colour;
 }
@@ -9,35 +13,30 @@ void Board::update(const Point& pPlace, VALUE pColour){
 }
 
 std::vector<Point> Board::getNeighboursOfSameColour(const Point& p) const{
-	/*Possible Optimization:
-		Since we never insert out of bounds elements we can assume
-		that we don't need to check the bounds. Then we can just
-		call find on the element.
-	*/
     std::vector<Point> lReturn;
 	const VALUE lColour = this->mBoard.find(p)->second;
-	if(abs(p.x - 1 + p.y) <= 4 && abs(p.x - 1) <= 4 && abs(p.y) <= 4)
+	if(!(abs(p.x - 1 + p.y) > 4 || abs(p.x - 1) > 4 || abs(p.y) > 4))
 		if(this->mBoard.find(Point(p.x - 1, p.y))->second == lColour)
 	        lReturn.emplace_back(Point(p.x - 1, p.y));
-	if(abs(p.x + p.y - 1) <= 4 && abs(p.x) <= 4 && abs(p.y - 1) <= 4)
+	if(!(abs(p.x + p.y - 1) > 4 || abs(p.x) > 4 || abs(p.y - 1) > 4))
 		if(this->mBoard.find(Point(p.x, p.y - 1))->second == lColour)
 	        lReturn.emplace_back(Point(p.x, p.y - 1));
-	if(abs(p.x + 1 + p.y) <= 4 && abs(p.x + 1) <= 4 && abs(p.y) <= 4)
+	if(!(abs(p.x + 1 + p.y) > 4 || abs(p.x + 1) > 4 || abs(p.y) > 4))
 		if(this->mBoard.find(Point(p.x + 1, p.y))->second == lColour)
 	        lReturn.emplace_back(Point(p.x + 1, p.y));
-	if(abs(p.x + p.y + 1) <= 4 && abs(p.x) <= 4 && abs(p.y + 1) <= 4)
+	if(!(abs(p.x + p.y + 1) > 4 || abs(p.x) > 4 || abs(p.y + 1) > 4))
 		if(this->mBoard.find(Point(p.x, p.y + 1))->second  == lColour)
 	        lReturn.emplace_back(Point(p.x, p.y + 1));
-	if(abs(p.x + p.y) <= 4 && abs(p.x + 1) <= 4 && abs(p.y - 1) <= 4)
+	if(!(abs(p.x + p.y) > 4 || abs(p.x + 1) > 4 || abs(p.y - 1) > 4))
 		if(this->mBoard.find(Point(p.x + 1, p.y - 1))->second == lColour)
 	        lReturn.emplace_back(Point(p.x + 1, p.y - 1));
-	if(abs(p.x + p.y) <= 4 && abs(p.x - 1) <= 4 && abs(p.y + 1) <= 4)
+	if(!(abs(p.x + p.y) > 4 || abs(p.x - 1) > 4 || abs(p.y + 1) > 4))
 		if(this->mBoard.find(Point(p.x - 1, p.y + 1))->second == lColour)
 	        lReturn.emplace_back(Point(p.x - 1, p.y + 1));
     return lReturn;
 }
 
-std::vector<Point> Board::getNeighbours(const Point& p){
+std::vector<Point> Board::getNeighbours(const Point& p){//Static
     std::vector<Point> lReturn;
     if(abs(p.x - 1 + p.y) <= 4 && abs(p.x - 1) <= 4 && abs(p.y) <= 4)
         lReturn.emplace_back(Point(p.x - 1, p.y));
@@ -62,7 +61,7 @@ std::vector<Point> Board::freeSpaces(void) const{
 			if(abs(i + j) > 4 || abs(i) > 4 || abs(j) > 4){
                 continue;
             }
-			Point p = Point(i,j);
+			const Point& p = Point(i,j);
 			if(this->mBoard.find(p) == this->mBoard.end()){
 				lFree.emplace_back(p);
 			}
@@ -78,7 +77,7 @@ std::vector<Move> Board::validMoves(void) const{
 			if(abs(i + j) > 4 || abs(i) > 4 || abs(j) > 4){
                 continue;
             }
-			Point p = Point(i,j);
+			const Point& p = Point(i,j);
 			if(this->mBoard.find(p) == this->mBoard.end()){
 				lMoves.emplace_back(Move(p, VALUE::BLACK));
 				lMoves.emplace_back(Move(p, VALUE::WHITE));
@@ -100,8 +99,7 @@ Board::STATE Board::boardStateEnd(void) const{
 			continue;
 		}
 		else{
-			int lSize = bfs(kv.first, lClosed);
-			if(lSize >= 5){
+			if(connectedComponent(kv.first, lClosed) >= 5){
 				(kv.second == VALUE::BLACK) ? lBlackGroups++ : lWhiteGroups++;
 			}
 		}
@@ -126,8 +124,7 @@ Board::STATE Board::boardState(void) const{
             continue;
         }
         else{
-            int lSize = bfs(kv.first, lClosed);
-            if(lSize >= 5){
+            if(connectedComponent(kv.first, lClosed) >= 5){
                 (kv.second == VALUE::BLACK) ? lBlackGroups++ : lWhiteGroups++;
             }
         }
@@ -138,13 +135,13 @@ Board::STATE Board::boardState(void) const{
     return (lBlackGroups + lWhiteGroups) & 0x00000001 ? STATE::ODD : STATE::EVEN;
 }
 
-int Board::bfs(const Point& origin, std::unordered_set<Point, PointHasher>& pClosed) const{
+int Board::connectedComponent(const Point& origin, std::unordered_set<Point, PointHasher>& pClosed) const{
 	int lSize = 0;
 	std::queue<Point> lOpen;
 	lOpen.push(origin);
 	while(! lOpen.empty()){
 		lSize++;
-		Point lCurrent = lOpen.front();
+		const Point lCurrent = lOpen.front();
 		lOpen.pop();
 		pClosed.insert(lCurrent);
 		for(const Point& p : getNeighboursOfSameColour(lCurrent)){
@@ -169,4 +166,8 @@ std::ostream& operator<< (std::ostream& pStream, const Board& pBoard){
         std::cout << std::endl;
     }
 	return pStream;
+}
+
+int Board::load(void) const{
+	return this->mBoard.bucket_count();
 }
