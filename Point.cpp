@@ -1,12 +1,8 @@
 #include "Point.hpp"
 
-Point::Point(int px, int py){
-	if((abs(px + py)) > 4 || (abs(px)) > 4 || (abs(py)) > 4){
+Point::Point(int px, int py) : x(px), y(py){
+	if(abs(px + py) > 4 || abs(px) > 4 || abs(py) > 4){
 		throw BoardBoundsException(px,py);
-	}
-	else{
-		this->x = px;
-		this->y = py;
 	}
 }
 

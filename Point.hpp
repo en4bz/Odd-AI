@@ -16,8 +16,8 @@ struct Point{
 std::ostream& operator<< (std::ostream& pStream, const Point& pPoint);
 
 struct PointHasher{
-	long operator() (const Point& pPoint) const{
-		return pPoint.y * 37 + pPoint.x * 787;
+	size_t operator() (const Point& pPoint) const{
+		return pPoint.y ^ (pPoint.x << 4);
 	}
 };
 #endif
