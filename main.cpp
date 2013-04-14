@@ -27,9 +27,6 @@ int main(int argc, char* argv[]){
 			return 1;
 		}
 		Board* const lGameBoard = new Board();
-		#ifdef RANDOM
-		RandomPlayer lPlayer(lPlayerID);
-		#endif
 		#ifdef MONTECARLO
 		MCPlayer lPlayer(lPlayerID, lGameBoard);
 		#endif

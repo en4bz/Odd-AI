@@ -1,6 +1,6 @@
 CC = g++-4.8
 STD = -std=c++11
-OPT = -O1 -march=native
+OPT = -Ofast -march=native -fomit-frame-pointer -ffast-math -faggressive-loop-optimizations
 CC_FLAGS = -Wall
 LINK = -lboost_system -lboost_timer -pthread
 #ENABLE_DEBUG =-D_DEBUG_ -g

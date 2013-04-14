@@ -11,7 +11,8 @@ Move AMAFPlayer::move(void){
 	}
 	int lMaxIndex = 0;
 	int lMaxValue = 0;
-	for(uint32_t i = 0; i < lResults.size(); i++){
+	const uint32_t lFutureSize = lResults.size();
+	for(uint32_t i = 0; i < lFutureSize; i++){
 		if(this->movesLeft() >= MOVES_TO_PLAY_AMAF){
 			const int lTemp = this->fetchAndUpdate(lMoves[i], lResults[i].get());
 			if(lTemp > lMaxValue){
