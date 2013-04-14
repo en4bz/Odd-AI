@@ -5,7 +5,7 @@
 #include "Profiler.hpp"
 #endif
 
-#include <cassert>
+#include <map>
 #include <queue>
 #include <vector>
 #include <ostream>
@@ -14,7 +14,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <random>
-#include <algorithm>
 
 #include "Point.hpp"
 #include "BoardBoundsException.hpp"
@@ -26,9 +25,9 @@ public:
     enum VALUE {EMPTY, WHITE, BLACK};
     enum STATE {EVEN, ODD};
 private:
-    std::unordered_map<Point, VALUE, PointHasher> mBoard;
+//    std::unordered_map<Point, VALUE, PointHasher> mBoard;
+	std::map<Point,VALUE> mBoard;
 public:
-	Board(void);
 	void update(const Move&);
 	void update(const Point&, VALUE);
 	std::vector<Point> getNeighboursOfSameColour(const Point& p) const;
@@ -44,6 +43,7 @@ public:
 };
 
 std::ostream& operator <<(std::ostream& pStream, const Board& pBoard);
+std::ostream& operator <<(std::ostream& pStream, const Move& pBoard);
 
 struct Move{
 	Point place;

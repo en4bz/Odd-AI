@@ -9,6 +9,7 @@
 struct Point{
 	int x,y;
 	Point(int px, int py);
+	bool operator < (const Point& pToCompare) const;
 	bool operator== (const Point& pToCompare) const;
 	bool operator!= (const Point& pToCompare) const;
 };

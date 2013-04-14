@@ -4,7 +4,6 @@
 #include <future>
 #include <thread>
 #include <random>
-#include <ext/random>
 #include <iostream>
 
 #include "Point.hpp"
@@ -20,7 +19,7 @@ public:
 	MCPlayer(int, Board* const);
 	Move move(void);
 	std::future<int> dispatchSimulation(const Move& pAction);
-	static int simulation(const Board::STATE pGoal, int pSeed, Board b);
+	static int simulation(const Board::STATE pGoal, Board b, int);
 	static Board::STATE simulateMatch(Board initial, int);
 };
 #endif

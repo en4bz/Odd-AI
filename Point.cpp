@@ -6,6 +6,18 @@ Point::Point(int px, int py) : x(px), y(py){
 	}
 }
 
+bool Point::operator < (const Point& pToCompare) const{
+	if(this->x < pToCompare.x){
+		return true;
+	}
+	else if(this->x == pToCompare.x){
+		return this->y > pToCompare.y;
+	}
+	else{
+		return false;
+	}
+}
+
 bool Point::operator== (const Point& pToCompare) const{
 	return x == pToCompare.x && y == pToCompare.y;
 }

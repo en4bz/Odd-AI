@@ -22,19 +22,19 @@ Move MCPlayer::move(void){
 }
 
 std::future<int> MCPlayer::dispatchSimulation(const Move& pAction){
-	std::packaged_task<int(Board::STATE,int,Board)> lDispatch(&MCPlayer::simulation);
+	std::packaged_task<int(Board::STATE,Board,int)> lDispatch(&MCPlayer::simulation);
 	Board lNewBoard(*(this->mCurrentState));
 	lNewBoard.update(pAction);
 	std::future<int> lReturn = lDispatch.get_future();
-	std::thread(std::move(lDispatch), this->mGoal, this->mEntropy(), lNewBoard).detach();
+	std::thread(std::move(lDispatch), this->mGoal, lNewBoard, this->mRound*5).detach();
 	return lReturn;
 }
 
 
-int MCPlayer::simulation(const Board::STATE pGoal, int pSeed, Board pStart){
+int MCPlayer::simulation(const Board::STATE pGoal, Board pStart, int pBoost){
 	std::random_device lGen;
 	int lWins = 0;
-    for(int i = 0; i < SIMULATIONS_PER_DISPATCH; i++){
+    for(int i = 0; i < SIMULATIONS_PER_DISPATCH + pBoost; i++){
 		if(pGoal == MCPlayer::simulateMatch(pStart, lGen())){
 			lWins++;
 		}
@@ -42,11 +42,10 @@ int MCPlayer::simulation(const Board::STATE pGoal, int pSeed, Board pStart){
 	return lWins;
 }
 
-Board::STATE MCPlayer::simulateMatch(Board initial, int pSeed){
-	const std::vector<Move> lMoves =  initial.samplePath(pSeed);
-	for(const Move& m : lMoves){
-		initial.update(m);
+Board::STATE MCPlayer::simulateMatch(Board pStartState, int pSeed){
+	for(const Move& m : pStartState.samplePath(pSeed)){
+		pStartState.update(m);
 	}
-	return initial.boardStateEnd();
+	return pStartState.boardStateEnd();
 }
 

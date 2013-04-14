@@ -7,6 +7,8 @@
 #include <ext/random>
 #include <iostream>
 
+#include <boost/heap/fibonacci_heap.hpp>
+
 #include "Point.hpp"
 #include "Board.hpp"
 #include "Player.hpp"
@@ -24,7 +26,7 @@ public:
 private:
 	std::random_device mEntropy;
 public:
-	UCBPlayer(int);
+	UCBPlayer(int, Board* const);
 	Move move(void);
 	std::future<int> dispatchSimulation(const Move& pAction);
 };

@@ -1,15 +1,11 @@
 #include "Board.hpp"
 
-Board::Board(void){
-	this->mBoard.reserve(43);
-}
-
 void Board::update(const Move& pNewMove){
-	this->mBoard[pNewMove.place] = pNewMove.colour;
+	this->mBoard.emplace(pNewMove.place, pNewMove.colour);
 }
 
 void Board::update(const Point& pPlace, VALUE pColour){
-	this->mBoard[pPlace] = pColour;
+	this->mBoard.emplace(pPlace, pColour);
 }
 
 std::vector<Point> Board::getNeighboursOfSameColour(const Point& p) const{
@@ -36,7 +32,7 @@ std::vector<Point> Board::getNeighboursOfSameColour(const Point& p) const{
     return lReturn;
 }
 
-std::vector<Point> Board::getNeighbours(const Point& p){//Static
+std::vector<Point> Board::getNeighbours(const Point& p){
     std::vector<Point> lReturn;
     if(abs(p.x - 1 + p.y) <= 4 && abs(p.x - 1) <= 4 && abs(p.y) <= 4)
         lReturn.emplace_back(Point(p.x - 1, p.y));
@@ -113,7 +109,7 @@ Board::STATE Board::boardStateEnd(void) const{
     #ifdef _BENCHMARK_
     Profiler lTimer("boardStateEnd(void): ");
     #endif
-	assert(this->mBoard.size() == 61);
+//	assert(this->mBoard.size() == 61);
     int lBlackGroups = 0;
     int lWhiteGroups = 0;
     std::unordered_set<Point, PointHasher> lClosed;
@@ -191,6 +187,6 @@ std::ostream& operator<< (std::ostream& pStream, const Board& pBoard){
 	return pStream;
 }
 
-int Board::load(void) const{
-	return this->mBoard.bucket_count();
+std::ostream& operator<< (std::ostream& pStream, const Move& pMove){
+	return (pStream << (pMove.colour == Board::VALUE::BLACK ? "BLACK " : "WHITE ") << pMove.place << " ");
 }
