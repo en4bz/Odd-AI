@@ -163,7 +163,7 @@ int Board::connectedComponent(const Point& origin, std::unordered_set<Point, Poi
 		const Point lCurrent = lOpen.front();
 		lOpen.pop();
 		pClosed.insert(lCurrent);
-		for(const Point& p : getNeighboursOfSameColour(lCurrent)){
+		for(const Point& p : this->getNeighboursOfSameColour(lCurrent)){
 			if(pClosed.find(p) == pClosed.end()){
 				lOpen.push(p);
 				pClosed.insert(p);
@@ -178,9 +178,8 @@ std::ostream& operator<< (std::ostream& pStream, const Board& pBoard){
         for(int j = -4; j <= 4; j++){
             if(abs(i + j) > 4 || abs(i) > 4 || abs(j) > 4)
                 std::cout << "(X,X)";
-            else{
+            else
                 std::cout << Point(i,j);
-            }
         }
         std::cout << std::endl;
     }

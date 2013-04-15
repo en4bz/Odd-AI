@@ -9,13 +9,14 @@
 
 #include "Point.hpp"
 #include "Board.hpp"
+#include "Profiler.hpp"
 #include "Player.hpp"
 #include "MCPlayer.hpp"
 
 class AMAFPlayer : public Player{
 public:
 	static constexpr int MOVES_TO_PLAY_AMAF = 40;
-	static constexpr int SIMULATIONS_PER_DISPATCH = 160;
+//	static constexpr int SIMULATIONS_PER_DISPATCH = 160;
 private:
 	std::random_device mEntropy;
 	std::unordered_map<Move, int, MoveHasher> mSeen;
