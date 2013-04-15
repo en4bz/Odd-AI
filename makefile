@@ -1,6 +1,6 @@
 CC = g++-4.8
 STD = -std=c++11
-OPT = -O2 #-march=native -fomit-frame-pointer -ffast-math -faggressive-loop-optimizations
+OPT = -Ofast #-march=native -fomit-frame-pointer -ffast-math -faggressive-loop-optimizations
 CC_FLAGS = -Wall
 LINK = -lboost_system -lboost_timer -pthread
 #ENABLE_DEBUG =-D_DEBUG_ -g
@@ -15,7 +15,7 @@ AMAFPlayer : main.hpp main.cpp AMAF.o MCPlayer.o
 	$(CC) -o AMAFPlayer $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) -D_AMAF_ \
 	 main.cpp Board.o Point.o Profiler.o MCPlayer.o Player.o AMAF.o $(LINK)
 
-MCPlayer : main.hpp main.cpp Board.o MCPlayer.o
+MCPlayer : main.hpp main.cpp MCPlayer.o
 	$(CC) -o MCPlayer $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) -DMONTECARLO \
 	 main.cpp Board.o Point.o Profiler.o Player.o MCPlayer.o $(LINK)
 
@@ -27,9 +27,6 @@ AMAF.o : AMAF.hpp AMAF.cpp Player.o
 
 NegaScout.o : NegaScout.hpp NegaScout.cpp Player.o
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) NegaScout.cpp
-
-UCBPlayer.o : UCBPlayer.hpp UCBPlayer.cpp MCPlayer.o
-	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) UCBPlayer.cpp
 
 MCPlayer.o : MCPlayer.hpp MCPlayer.cpp Player.o
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) MCPlayer.cpp
