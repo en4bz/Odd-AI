@@ -6,13 +6,17 @@ Move MCPlayer::move(void){
 	const std::vector<Move>& lMoves = this->mCurrentState->validMoves();
 	std::vector<std::future<int>> lResults;
 	lResults.reserve(lMoves.size());
+//	std::cout << "Dispatching" << std::endl;
 	for(const Move& m : lMoves){
 		lResults.emplace_back(dispatchSimulation(m));
 	}
+//	std::cout << "Done Dispatching" << std::endl;
 	int lMaxIndex = 0;
 	int lMaxValue = 0;
-	for(uint32_t i = 0; i < lResults.size(); i++){
+	const uint32_t lResultsSize = lResults.size();
+	for(uint32_t i = 0; i < lResultsSize; i++){
 		const int lTemp = lResults[i].get();
+//		std::cout << "Result:" << i << " = " << lTemp << std::endl;
 		if(lTemp > lMaxValue){
 			lMaxValue = lTemp;
 			lMaxIndex = i;
@@ -31,21 +35,18 @@ std::future<int> MCPlayer::dispatchSimulation(const Move& pAction){
 }
 
 
-int MCPlayer::simulation(const Board::STATE pGoal, Board pStart, int pBoost){
+int MCPlayer::simulation(const Board::STATE pGoal, const Board pStart, const int pBoost){
 	std::random_device lGen;
 	int lWins = 0;
     for(int i = 0; i < SIMULATIONS_PER_DISPATCH + pBoost; i++){
-		if(pGoal == MCPlayer::simulateMatch(pStart, lGen())){
+		Board lTemp = pStart;
+		for(const Move& m : lTemp.samplePath(lGen())){
+			lTemp.update(m);
+		}
+		if(pGoal == lTemp.boardStateEnd()){
 			lWins++;
 		}
     }
 	return lWins;
-}
-
-Board::STATE MCPlayer::simulateMatch(Board pStartState, int pSeed){
-	for(const Move& m : pStartState.samplePath(pSeed)){
-		pStartState.update(m);
-	}
-	return pStartState.boardStateEnd();
 }
 
