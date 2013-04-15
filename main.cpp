@@ -36,6 +36,9 @@ int main(int argc, char* argv[]){
 		#ifdef _AMAF_
 		AMAFPlayer lPlayer(lPlayerID, lGameBoard);
 		#endif
+		#ifdef _AMAF2_
+		AMAF2 lPlayer(lPlayerID, lGameBoard);
+		#endif
 		#ifdef HYBRIDPLAYER
 		Hybrid lPlayer(lPlayerID, lGameBoard);
 		#endif

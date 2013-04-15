@@ -6,17 +6,17 @@ Move MCPlayer::move(void){
 	const std::vector<Move>& lMoves = this->mCurrentState->validMoves();
 	std::vector<std::future<int>> lResults;
 	lResults.reserve(lMoves.size());
-//	std::cout << "Dispatching" << std::endl;
+	std::cout << "Dispatching... ";
 	for(const Move& m : lMoves){
 		lResults.emplace_back(dispatchSimulation(m));
 	}
-//	std::cout << "Done Dispatching" << std::endl;
+	std::cout << "Done Dispatching!" << std::endl;
 	int lMaxIndex = 0;
 	int lMaxValue = 0;
 	const uint32_t lResultsSize = lResults.size();
 	for(uint32_t i = 0; i < lResultsSize; i++){
 		const int lTemp = lResults[i].get();
-//		std::cout << "Result:" << i << " = " << lTemp << std::endl;
+		std::cout << "Result:" << i << " = " << lTemp << std::endl;
 		if(lTemp > lMaxValue){
 			lMaxValue = lTemp;
 			lMaxIndex = i;
