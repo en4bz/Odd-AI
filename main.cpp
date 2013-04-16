@@ -1,17 +1,22 @@
 #include "main.hpp"
 
-using namespace std;
 using namespace boost::asio;
 
-
 int main(int argc, char* argv[]){
+	std::string host("localhost");
+	std::string port("8123");
+	if(argc > 1){
+		host = argv[1];
+		if(argc > 2){
+			port = argv[2];
+		}
+	}
   	try{
-		const std::string lName = "XYZ";
 		ip::tcp::iostream socket;
-		socket.connect("localhost", "8123");
-		cout << "Waiting to Start..." << endl;//Acknowledge
-		socket << "START " << lName << endl;
-		int lPlayerID = -1;
+		socket.connect(host, port);
+		std::cout << "Waiting to Start..." << std::endl;
+		socket << "START " << "NAME" << std::endl;
+		int lPlayerID;
 		std::string lPlayerName;
 		socket.ignore(16, ' ');
 		socket >> lPlayerName;
@@ -22,16 +27,13 @@ int main(int argc, char* argv[]){
 			lPlayerID = 2;
 		}
 		else{
-			std::cout << "Server Error" << std::endl;
+			std::cout << "Server Error!" << std::endl;
 			socket.close();
 			return 1;
 		}
-		Board* const lGameBoard = new Board();
+		Board* const lGameBoard = new Board;
 		#ifdef MONTECARLO
 		MCPlayer lPlayer(lPlayerID, lGameBoard);
-		#endif
-		#ifdef UCB
-		UCBPlayer lPlayer(lPlayerID);
 		#endif
 		#ifdef _AMAF_
 		AMAFPlayer lPlayer(lPlayerID, lGameBoard);
@@ -42,35 +44,32 @@ int main(int argc, char* argv[]){
 		#ifdef HYBRIDPLAYER
 		Hybrid lPlayer(lPlayerID, lGameBoard);
 		#endif
-		cout << "Playing as " << lPlayerName << endl;
+		std::cout << "Playing as " << lPlayerName << std::endl;
 		bool isOver = false;
-		while( ! isOver){
+		while( !isOver){
 			std::string lMessage;
 			socket >> lMessage;
-			#ifdef _DEBUG_
-			cout << "Proccessing: " << lMessage << " |" << endl;
-			#endif
 			if(lMessage == "PLAY"){
 				std::cout << " Move :" << lPlayer.movesLeft() <<  " | ";
 				const Profiler lMoveTime("Executed Move in: ");
 				sendMove(socket, lPlayerID, lPlayer.move());
-				socket.ignore(16,' ');//Empty socket after playing.
-				cout << lMoveTime;
+//				socket.ignore(16,' ');//Empty socket after playing. Why?
+				std::cout << lMoveTime;
 			}
 			else if(lMessage == "1" || lMessage == "2"){
 				lPlayer.updateBoard(processMove(socket));
 			}
 			else if(lMessage == "GAMEOVER"){
-				cout << lMessage << " ";
+				std::cout << lMessage << " ";
 				socket >> lMessage;
-				cout << lMessage << " ";
+				std::cout << lMessage << " ";
 				socket >> lMessage;
-				cout << lMessage << endl;
+				std::cout << lMessage << std::endl;
 				if(lMessage == lPlayerName){
-					cout << "Win" << endl;
+					std::cout << "Win" << std::endl;
 				}
 				else{
-					cout << "Lose" << endl;
+					std::cout << "Lose" << std::endl;
 				}
 				isOver = true;
 			}
@@ -79,10 +78,10 @@ int main(int argc, char* argv[]){
 		socket.close();
   	}
   	catch (std::exception& e){
-		cerr << e.what() << endl;
+		std::cerr << e.what() << std::endl;
 		return 1;
   	}
-	cout << "Terminating..." << endl;
+	std::cout << "Terminating..." << std::endl;
   	return 0;
 }
 
@@ -90,21 +89,17 @@ Move processMove(ip::tcp::iostream& lStream){
 	int x,y;
 	std::string lColour;
 	lStream >> lColour >> x >> y;
-	if(lColour == "WHITE"){
+	if(lColour == "WHITE")
 		return Move(Point(x-y,y), Board::VALUE::WHITE);
-	}
-	else{
+	else
 		return Move(Point(x-y,y), Board::VALUE::BLACK);
-	}
 }
 
 void sendMove(ip::tcp::iostream& socket, int playerid, const Move& move){
-	if(move.colour == Board::VALUE::WHITE){
-		socket << playerid << " WHITE " << move.place.x + move.place.y << " " << move.place.y << endl;
-	}
-	else{
-		socket << playerid << " BLACK " << move.place.x + move.place.y << " " << move.place.y << endl;
-	}
+	if(move.colour == Board::VALUE::WHITE)
+		socket << playerid << " WHITE " << move.place.x + move.place.y << " " << move.place.y << std::endl;
+	else
+		socket << playerid << " BLACK " << move.place.x + move.place.y << " " << move.place.y << std::endl;
 	return;
 }
 
