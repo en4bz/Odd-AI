@@ -8,7 +8,11 @@ Move AMAF2::move(void){
 	std::vector<std::future<int>> lResults;
 	lResults.reserve(lMoves.size());
 	for(const Move& m : lMoves){
-		lResults.emplace_back(dispatchSimulation(m, std::ref(lLowerBound)));
+		Board lNewBoard = *(this->mCurrentState);
+		lNewBoard.update(m);
+		std::packaged_task<int(Board,int,std::atomic<int>&,Board::STATE)> lDispatch(&AMAF2::simulation);
+		lResults.emplace_back(lDispatch.get_future());
+		std::thread(std::move(lDispatch), lNewBoard, this->mRound*5, std::ref(lLowerBound), this->mGoal).detach();
 	}
 	int lMaxIndex = 0;
 	int lMaxValue = 0;
@@ -55,6 +59,7 @@ std::future<int> AMAF2::dispatchSimulation(const Move& pAction, std::atomic<int>
 //	std::thread(std::move(lDispatch), lNewBoard, this->mRound*5, std::ref(pLowerBound), this->mGoal).detach();
 //	return lReturn;
 	return std::async(std::launch::async, &AMAF2::simulation, lNewBoard, this->mRound*5, std::ref(pLowerBound), this->mGoal);
+
 }
 
 int AMAF2::simulation(const Board pStart, const int pBoost, std::atomic<int>& pLowerBound, const Board::STATE pGoal){
@@ -77,6 +82,5 @@ int AMAF2::simulation(const Board pStart, const int pBoost, std::atomic<int>& pL
 	do{
 		lLower = pLowerBound.load();
 	}while(lLower > lLosses && pLowerBound.compare_exchange_strong(lLower, lLosses));
-	std::cout << &pLowerBound << std::endl;
 	return lWins;
 }
