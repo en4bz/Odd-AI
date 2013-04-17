@@ -7,6 +7,7 @@
 
 #include "AMAF.hpp"
 #include "AMAF2.hpp"
+#include "MCP2.hpp"
 #include "Point.hpp"
 #include "Board.hpp"
 #include "Player.hpp"

@@ -6,6 +6,9 @@ LINK = -lboost_system -lboost_timer -pthread
 #ENABLE_DEBUG =-D_DEBUG_ -g
 #ENABLE_BENCH =-D_BENCHMARK_
 
+MCP2 : main.hpp main.cpp MCP2.o
+	$(CC) -o MCP2 $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) -D_MCP2_ \
+	 main.cpp Board.o Point.o Profiler.o Player.o MCP2.o AMAF2.o $(LINK)
 
 AMAF2 : main.hpp main.cpp AMAF2.o
 	$(CC) -o AMAF2 $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) -D_AMAF2_ \
@@ -18,6 +21,9 @@ AMAFPlayer : main.hpp main.cpp AMAF.o MCPlayer.o
 MCPlayer : main.hpp main.cpp MCPlayer.o
 	$(CC) -o MCPlayer $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) -D_MONTECARLO_ \
 	 main.cpp Board.o Point.o Profiler.o Player.o MCPlayer.o $(LINK)
+
+MCP2.o : MCP2.hpp MCP2.cpp Player.o AMAF2.o
+	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) MCP2.cpp
 
 AMAF2.o : AMAF2.hpp AMAF2.cpp Player.o
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) AMAF2.cpp

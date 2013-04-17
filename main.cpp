@@ -34,6 +34,9 @@ int main(int argc, char* argv[]){
 		#ifdef _MONTECARLO_
 		MCPlayer lPlayer(lPlayerID);
 		#endif
+		#ifdef _MCP2_
+		MCP2 lPlayer(lPlayerID);
+		#endif
 		#ifdef _AMAF_
 		AMAFPlayer lPlayer(lPlayerID);
 		#endif

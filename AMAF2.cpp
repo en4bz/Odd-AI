@@ -43,21 +43,18 @@ Move AMAF2::move(void){
 
 int AMAF2::simulation(const Board::STATE pGoalState, const Board pStartState, const int pNumSimulations, std::atomic<int>& pLowerBound){
 	std::random_device lGen;
-	int lWins = 0;
 	int lLosses = 0;
     for(int i = 0; i < pNumSimulations; i++){
 		if(lLosses > pLowerBound.load()){
-			return lWins;
+			return i - lLosses;
 		}
 		Board lTemp = pStartState;
-		if(pGoalState == lTemp.sim(lGen()))
-			lWins++;
-		else
+		if(pGoalState != lTemp.sim(lGen()))
 			lLosses++;
     }
 	int lLower;
 	do{
 		lLower = pLowerBound.load();
-	}while(lLower > lLosses && pLowerBound.compare_exchange_strong(lLower, lLosses));
-	return lWins;
+	}while(lLower > lLosses && ! pLowerBound.compare_exchange_weak(lLower, lLosses));
+	return pNumSimulations - lLosses;
 }
