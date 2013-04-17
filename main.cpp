@@ -54,6 +54,7 @@ int main(int argc, char* argv[]){
 				const Profiler lMoveTime("Executed Move in: ");
 				sendMove(socket, lPlayerID, lPlayer.move());
 //				socket.ignore(16,' ');//Empty socket after playing. Why?
+//				std::cout << "Simulations: " << (AMAF2::SIMULATIONS_PER_DISPATCH + 2*lPlayer.roundNumber()*lPlayer.roundNumber())*(122-2*lPlayer.roundNumber()) << "| ";
 				std::cout << lMoveTime;
 			}
 			else if(lMessage == "1" || lMessage == "2"){

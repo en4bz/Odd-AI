@@ -3,17 +3,18 @@
 AMAF2::AMAF2(int pID, Board* const pBoard) : Player(pID, pBoard) {}
 
 Move AMAF2::move(void){
-	std::atomic<int> lLowerBound(std::numeric_limits<int>::max());
+	std::atomic<int> lLowerBound(std::numeric_limits<int>::max());//Set Lower Bound to infinity.
 	const std::vector<Move>& lMoves = this->mCurrentState->validMoves();
 	std::vector<std::future<int>> lResults;
 	lResults.reserve(lMoves.size());
-	for(const Move& m : lMoves){
+	for(const Move& m : lMoves){//Dispatch Simulations
 		Board lNewBoard = *(this->mCurrentState);
 		lNewBoard.update(m);
-		std::packaged_task<int(Board,int,std::atomic<int>&,Board::STATE)> lDispatch(&AMAF2::simulation);
+		std::packaged_task<int(Board::STATE,Board,int,std::atomic<int>&)> lDispatch(&AMAF2::simulation);
 		lResults.emplace_back(lDispatch.get_future());
-		std::thread(std::move(lDispatch), lNewBoard, this->mRound*5, std::ref(lLowerBound), this->mGoal).detach();
+		std::thread(std::move(lDispatch), this->mGoal, lNewBoard, SIMULATIONS_PER_MOVE / lMoves.size(), std::ref(lLowerBound)).detach();
 	}
+	std::cout << "Simulations Per Thread: " << SIMULATIONS_PER_MOVE / lMoves.size() << " | ";
 	int lMaxIndex = 0;
 	int lMaxValue = 0;
 	const uint32_t lFutureSize = lResults.size();
@@ -40,40 +41,30 @@ Move AMAF2::move(void){
 }
 
 int AMAF2::fetchAndUpdate(const Move& m, int inc){
-	auto lEnd = this->mSeen.end();
-	if(this->mSeen.find(m) == lEnd){
+	auto lMove = this->mSeen.find(m);
+	if(lMove == this->mSeen.end()){
 		this->mSeen.emplace(m,inc);
-
+//		this->mSeen.insert(make_pair(m,inc));
+		return inc;
 	}
 	else{
-		this->mSeen[m] += inc;
+		lMove->second += inc;
+		return lMove->second;
 	}
-	return this->mSeen[m];
 }
 
-std::future<int> AMAF2::dispatchSimulation(const Move& pAction, std::atomic<int>& pLowerBound){
-//	std::packaged_task<int(Board,int,std::atomic<int>&,Board::STATE)> lDispatch(&AMAF2::simulation);
-	Board lNewBoard = *(this->mCurrentState);
-	lNewBoard.update(pAction);
-//	std::future<int> lReturn = lDispatch.get_future();
-//	std::thread(std::move(lDispatch), lNewBoard, this->mRound*5, std::ref(pLowerBound), this->mGoal).detach();
-//	return lReturn;
-	return std::async(std::launch::async, &AMAF2::simulation, lNewBoard, this->mRound*5, std::ref(pLowerBound), this->mGoal);
-
-}
-
-int AMAF2::simulation(const Board pStart, const int pBoost, std::atomic<int>& pLowerBound, const Board::STATE pGoal){
+int AMAF2::simulation(const Board::STATE pGoalState, const Board pStartState, const int pNumSimulations, std::atomic<int>& pLowerBound){
 	std::random_device lGen;
 	int lWins = 0;
 	int lLosses = 0;
-    for(int i = 0; i < AMAF2::SIMULATIONS_PER_DISPATCH + pBoost; i++){
+    for(int i = 0; i < pNumSimulations; i++){
 		if(lLosses > pLowerBound.load()){
 			return lWins;
 		}
-		Board lTemp = pStart;
+		Board lTemp = pStartState;
 		for(const Move& m : lTemp.samplePath(lGen()))
 			lTemp.update(m);
-		if(pGoal == lTemp.boardStateEnd())
+		if(pGoalState == lTemp.boardStateEnd())
 			lWins++;
 		else
 			lLosses++;

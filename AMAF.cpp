@@ -7,7 +7,11 @@ Move AMAFPlayer::move(void){
 	std::vector<std::future<int>> lResults;
 	lResults.reserve(lMoves.size());
 	for(const Move& m : lMoves){
-		lResults.emplace_back(dispatchSimulation(m));
+		std::packaged_task<int(Board::STATE,Board,int)> lDispatch(&MCPlayer::simulation);//MCPlayer static method.
+		lResults.emplace_back(lDispatch.get_future());
+		Board lNewBoard = *(this->mCurrentState);
+		lNewBoard.update(m);
+		std::thread(std::move(lDispatch), this->mGoal, lNewBoard, SIMULATIONS_PER_MOVE / lMoves.size()).detach();
 	}
 	int lMaxIndex = 0;
 	int lMaxValue = 0;
@@ -43,13 +47,4 @@ int AMAFPlayer::fetchAndUpdate(const Move& m, int inc){
 		this->mSeen[m] += inc;
 	}
 	return this->mSeen[m];
-}
-
-std::future<int> AMAFPlayer::dispatchSimulation(const Move& pAction){
-	std::packaged_task<int(Board::STATE,Board,int)> lDispatch(&MCPlayer::simulation);//MCPlayer static method.
-	Board lNewBoard(*(this->mCurrentState));
-	lNewBoard.update(pAction);
-	std::future<int> lReturn = lDispatch.get_future();
-	std::thread(std::move(lDispatch), this->mGoal, lNewBoard, this->mRound*5).detach();
-	return lReturn;
 }
