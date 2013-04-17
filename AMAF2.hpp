@@ -21,9 +21,8 @@ public:
 private:
 	std::unordered_map<Move, int, MoveHasher> mSeen;
 public:
-	AMAF2(int, Board* const);
+	AMAF2(int);
 	Move move(void);
-	int fetchAndUpdate(const Move&, int);
 	static int simulation(const Board::STATE pGoalState, const Board pStartState, const int pNumSimulations, std::atomic<int>& pLowerBound);
 };
 #endif

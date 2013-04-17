@@ -20,8 +20,7 @@ public:
 private:
 	std::unordered_map<Move, int, MoveHasher> mSeen;
 public:
-	AMAFPlayer(int, Board* const);
+	AMAFPlayer(int);
 	Move move(void);
-	int fetchAndUpdate(const Move&, int);
 };
 #endif
