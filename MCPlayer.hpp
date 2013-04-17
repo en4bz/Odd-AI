@@ -12,7 +12,7 @@
 
 class MCPlayer : public Player{
 public:
-	static constexpr int SIMULATIONS_PER_MOVE = 45000;
+	static constexpr int SIMULATIONS_PER_MOVE = 48000;
 public:
 	MCPlayer(int);
 	Move move(void);

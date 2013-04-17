@@ -4,10 +4,6 @@ void Board::update(const Move& pNewMove){
 	this->mBoard.emplace(pNewMove.place, pNewMove.colour);
 }
 
-void Board::update(const Point& pPlace, VALUE pColour){
-	this->mBoard.emplace(pPlace, pColour);
-}
-
 std::vector<Point> Board::getNeighboursOfSameColour(const Point& p) const{
     std::vector<Point> lReturn;
 	const VALUE lColour = this->mBoard.find(p)->second;
@@ -32,29 +28,11 @@ std::vector<Point> Board::getNeighboursOfSameColour(const Point& p) const{
     return lReturn;
 }
 
-std::vector<Point> Board::getNeighbours(const Point& p){
-    std::vector<Point> lReturn;
-    if(abs(p.x - 1 + p.y) <= 4 && abs(p.x - 1) <= 4 && abs(p.y) <= 4)
-        lReturn.emplace_back(Point(p.x - 1, p.y));
-    if(abs(p.x + p.y - 1) <= 4 && abs(p.x) <= 4 && abs(p.y - 1) <= 4)
-        lReturn.emplace_back(Point(p.x, p.y - 1));
-    if(abs(p.x + 1 + p.y) <= 4 && abs(p.x + 1) <= 4 && abs(p.y) <= 4)
-        lReturn.emplace_back(Point(p.x + 1, p.y));
-    if(abs(p.x + p.y + 1) <= 4 && abs(p.x) <= 4 && abs(p.y + 1) <= 4)
-        lReturn.emplace_back(Point(p.x, p.y + 1));
-    if(abs(p.x + p.y) <= 4 && abs(p.x + 1) <= 4 && abs(p.y - 1) <= 4)
-        lReturn.emplace_back(Point(p.x + 1, p.y - 1));
-    if(abs(p.x + p.y) <= 4 && abs(p.x - 1) <= 4 && abs(p.y + 1) <= 4)
-        lReturn.emplace_back(Point(p.x - 1, p.y + 1));
-    return lReturn;
-}
-
-
 std::vector<Point> Board::freeSpaces(void) const{
     std::vector<Point> lFree;
     for(int i = -4; i <= 4; i++){
         for(int j = -4; j <= 4; j++){
-			if(abs(i + j) > 4 || abs(i) > 4 || abs(j) > 4){
+			if(abs(i + j) > 4){
                 continue;
             }
 			const Point& p = Point(i,j);
@@ -66,33 +44,11 @@ std::vector<Point> Board::freeSpaces(void) const{
 	return lFree;
 }
 
-std::vector<Move> Board::samplePath(int pSeed) const{
-	std::vector<Move> lMoves;
-	std::mt19937 lGen(pSeed);
-	std::uniform_int_distribution<int> lWB(0,1);
-	for(int i = -4; i <= 4; i++){
-		for(int j = -4; j <= 4; j++){
-			if(abs(i + j) > 4 || abs(i) > 4 || abs(j) > 4){
-                continue;
-            }
-			const Point& p = Point(i,j);
-			if(this->mBoard.find(p) == this->mBoard.end()){
-				if(lWB(lGen) == 0)
-					lMoves.emplace_back(Move(p, VALUE::BLACK));
-				else
-					lMoves.emplace_back(Move(p, VALUE::WHITE));
-			}
-		}
-    }
-	std::shuffle(lMoves.begin(),lMoves.end(), lGen);
-	return lMoves;
-}
-
 std::vector<Move> Board::validMoves(void) const{
     std::vector<Move> lMoves;
     for(int i = -4; i <= 4; i++){
         for(int j = -4; j <= 4; j++){
-			if(abs(i + j) > 4 || abs(i) > 4 || abs(j) > 4){
+			if(abs(i + j) > 4){
                 continue;
             }
 			const Point& p = Point(i,j);
@@ -109,7 +65,7 @@ Board::STATE Board::boardStateEnd(void) const{
     #ifdef _BENCHMARK_
     Profiler lTimer("boardStateEnd(void): ");
     #endif
-//	assert(this->mBoard.size() == 61);
+	assert(this->mBoard.size() == 61);
     int lBlackGroups = 0;
     int lWhiteGroups = 0;
     std::unordered_set<Point, PointHasher> lClosed;
@@ -160,8 +116,7 @@ int Board::connectedComponent(const Point& origin, std::unordered_set<Point, Poi
 	lOpen.push(origin);
 	while(! lOpen.empty()){
 		lSize++;
-		const Point lCurrent = lOpen.front();
-		lOpen.pop();
+		const Point& lCurrent = lOpen.front();
 		pClosed.insert(lCurrent);
 		for(const Point& p : this->getNeighboursOfSameColour(lCurrent)){
 			if(pClosed.find(p) == pClosed.end()){
@@ -169,8 +124,29 @@ int Board::connectedComponent(const Point& origin, std::unordered_set<Point, Poi
 				pClosed.insert(p);
 			}
 		}
+		lOpen.pop();
 	}
 	return lSize;
+}
+
+Board::STATE Board::sim(int pSeed){
+	std::mt19937 lGen(pSeed);
+	std::uniform_int_distribution<int> lWB(0,1);
+	for(int i = -4; i <= 4; i++){
+		for(int j = -4; j <= 4; j++){
+			if(abs(i + j) > 4){
+                continue;
+            }
+			const Point& p = Point(i,j);
+			if(this->mBoard.find(p) == this->mBoard.end()){
+				if(lWB(lGen) == 0)
+					this->mBoard.emplace(p, VALUE::BLACK);
+				else
+					this->mBoard.emplace(p, VALUE::WHITE);
+			}
+		}
+    }
+	return this->boardStateEnd();
 }
 
 std::ostream& operator<< (std::ostream& pStream, const Board& pBoard){

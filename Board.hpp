@@ -9,6 +9,7 @@
 #include <queue>
 #include <vector>
 #include <random>
+#include <cassert>
 #include <ostream>
 #include <iostream>
 #include <algorithm>
@@ -29,16 +30,13 @@ private:
 	std::map<Point,VALUE> mBoard;
 public:
 	void update(const Move&);
-	void update(const Point&, VALUE);
 	std::vector<Point> getNeighboursOfSameColour(const Point& p) const;
-	static std::vector<Point> getNeighbours(const Point& p);
 	std::vector<Point> freeSpaces(void) const;
-	std::vector<Move> samplePath(int) const;
 	std::vector<Move> validMoves(void) const;
 	STATE boardState(void) const;
 	STATE boardStateEnd(void) const;//Only use when we know there are no free spaces left, saves call to freeSpaces()
+	STATE sim(int pSeed);
 	int connectedComponent(const Point&, std::unordered_set<Point, PointHasher>&) const;
-	int load(void) const;
 	friend std::ostream& operator <<(std::ostream& pStream, const Board& pBoard);
 };
 

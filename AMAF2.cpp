@@ -50,9 +50,7 @@ int AMAF2::simulation(const Board::STATE pGoalState, const Board pStartState, co
 			return lWins;
 		}
 		Board lTemp = pStartState;
-		for(const Move& m : lTemp.samplePath(lGen()))
-			lTemp.update(m);
-		if(pGoalState == lTemp.boardStateEnd())
+		if(pGoalState == lTemp.sim(lGen()))
 			lWins++;
 		else
 			lLosses++;

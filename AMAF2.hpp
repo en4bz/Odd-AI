@@ -17,7 +17,7 @@
 class AMAF2 : public Player{
 public:
 	static constexpr int MOVES_TO_PLAY_AMAF = 40;
-	static constexpr int SIMULATIONS_PER_MOVE = 48000;
+	static constexpr int SIMULATIONS_PER_MOVE = 50000;
 private:
 	std::unordered_map<Move, int, MoveHasher> mSeen;
 public:
