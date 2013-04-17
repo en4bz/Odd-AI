@@ -9,10 +9,9 @@ protected:
 	const int mID;
 	const Board::STATE mGoal;
 	int mRound;
-	Board* const mCurrentState;
+	Board mCurrentState;
 public:
 	Player(int);
-	Player(int, Board* const);
     int roundNumber(void) const;
     int movesLeft(void) const;
     void updateBoard(const Move&);

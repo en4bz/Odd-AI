@@ -8,12 +8,12 @@
 #include <map>
 #include <queue>
 #include <vector>
+#include <random>
 #include <ostream>
 #include <iostream>
 #include <algorithm>
 #include <unordered_map>
 #include <unordered_set>
-#include <random>
 
 #include "Point.hpp"
 #include "BoardBoundsException.hpp"
@@ -22,7 +22,7 @@ struct Move;
 
 class Board{
 public:
-    enum VALUE {EMPTY, WHITE, BLACK};
+    enum VALUE {WHITE, BLACK};
     enum STATE {EVEN, ODD};
 private:
 //    std::unordered_map<Point, VALUE, PointHasher> mBoard;

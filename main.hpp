@@ -10,11 +10,9 @@
 #include "Point.hpp"
 #include "Board.hpp"
 #include "Player.hpp"
-#include "Hybrid.hpp"
 #include "MCPlayer.hpp"
 #include "Profiler.hpp"
-#include "NegaScout.hpp"
 
-void 	sendMove(boost::asio::ip::tcp::iostream&, int , const Move&);
+void 	sendMove(boost::asio::ip::tcp::iostream&, int, const Move&);
 Move 	processMove(boost::asio::ip::tcp::iostream&);
 #endif

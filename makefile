@@ -7,10 +7,6 @@ LINK = -lboost_system -lboost_timer -pthread
 #ENABLE_BENCH =-D_BENCHMARK_
 
 
-HybridPlayer : main.hpp main.cpp Board.o MCPlayer.o NegaScout.o
-	$(CC) -o Hybrid $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) -DHYBRIDPLAYER \
-	main.cpp Hybrid.cpp Board.o Point.o Profiler.o Player.o MCPlayer.o NegaScout.o $(LINK)
-
 AMAF2 : main.hpp main.cpp AMAF2.o
 	$(CC) -o AMAF2 $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) -D_AMAF2_ \
 	 main.cpp Board.o Point.o Profiler.o Player.o AMAF2.o $(LINK)
@@ -20,11 +16,8 @@ AMAFPlayer : main.hpp main.cpp AMAF.o MCPlayer.o
 	 main.cpp Board.o Point.o Profiler.o MCPlayer.o Player.o AMAF.o $(LINK)
 
 MCPlayer : main.hpp main.cpp MCPlayer.o
-	$(CC) -o MCPlayer $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) -DMONTECARLO \
+	$(CC) -o MCPlayer $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) -D_MONTECARLO_ \
 	 main.cpp Board.o Point.o Profiler.o Player.o MCPlayer.o $(LINK)
-
-#Hybrid.o : Hybrid.hpp Hybrid.cpp Player.o MCPlayer.o NegaScout.o
-#	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) Hybrid.cpp Player.o
 
 AMAF2.o : AMAF2.hpp AMAF2.cpp Player.o
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) AMAF2.cpp

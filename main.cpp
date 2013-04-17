@@ -31,18 +31,14 @@ int main(int argc, char* argv[]){
 			socket.close();
 			return 1;
 		}
-		Board* const lGameBoard = new Board;
-		#ifdef MONTECARLO
-		MCPlayer lPlayer(lPlayerID, lGameBoard);
+		#ifdef _MONTECARLO_
+		MCPlayer lPlayer(lPlayerID);
 		#endif
 		#ifdef _AMAF_
-		AMAFPlayer lPlayer(lPlayerID, lGameBoard);
+		AMAFPlayer lPlayer(lPlayerID);
 		#endif
 		#ifdef _AMAF2_
-		AMAF2 lPlayer(lPlayerID, lGameBoard);
-		#endif
-		#ifdef HYBRIDPLAYER
-		Hybrid lPlayer(lPlayerID, lGameBoard);
+		AMAF2 lPlayer(lPlayerID);
 		#endif
 		std::cout << "Playing as " << lPlayerName << std::endl;
 		bool isOver = false;
@@ -54,7 +50,6 @@ int main(int argc, char* argv[]){
 				const Profiler lMoveTime("Executed Move in: ");
 				sendMove(socket, lPlayerID, lPlayer.move());
 //				socket.ignore(16,' ');//Empty socket after playing. Why?
-//				std::cout << "Simulations: " << (AMAF2::SIMULATIONS_PER_DISPATCH + 2*lPlayer.roundNumber()*lPlayer.roundNumber())*(122-2*lPlayer.roundNumber()) << "| ";
 				std::cout << lMoveTime;
 			}
 			else if(lMessage == "1" || lMessage == "2"){
@@ -75,7 +70,6 @@ int main(int argc, char* argv[]){
 				isOver = true;
 			}
 		}
-		delete lGameBoard;
 		socket.close();
   	}
   	catch (std::exception& e){

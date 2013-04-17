@@ -14,7 +14,7 @@ class MCPlayer : public Player{
 public:
 	static constexpr int SIMULATIONS_PER_MOVE = 45000;
 public:
-	MCPlayer(int, Board* const);
+	MCPlayer(int);
 	Move move(void);
 	static int simulation(const Board::STATE pGoalState, const Board pStartState, const int pNumSimulations);
 };
