@@ -32,7 +32,7 @@ int MCPlayer::simulation(const Board::STATE pGoalState, const Board pStartState,
 	int lWins = 0;
     for(int i = 0; i < pNumSimulations; i++){
 		Board lTemp = pStartState;
-		if(pGoalState == lTemp.sim(lGen()))
+		if(pGoalState == lTemp.rollout(lGen()))
 			lWins++;
     }
 	return lWins;
