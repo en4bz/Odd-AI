@@ -3,8 +3,7 @@ STD = -std=c++11
 OPT = -Ofast -march=native #-fomit-frame-pointer -ffast-math -faggressive-loop-optimizations
 CC_FLAGS = -Wall
 LINK = -lboost_system -lboost_timer -pthread
-#ENABLE_DEBUG =-D_DEBUG_ -g
-#ENABLE_BENCH =-D_BENCHMARK_
+CORES := $(shell grep -c "processor" /proc/cpuinfo)
 
 MCP2 : main.hpp main.cpp MCP2.o
 	$(CC) -o MCP2 $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) -D_MCP2_ \
@@ -44,7 +43,7 @@ Board.o : Board.hpp Board.cpp Point.o Profiler.o
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) $(ENABLE_BENCH) Board.cpp
 
 Profiler.o : Profiler.hpp Profiler.cpp
-	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) Profiler.cpp $(LINK)
+	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) Profiler.cpp
 
 Point.o : Point.hpp Point.cpp
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) $(ENABLE_DEBUG) Point.cpp
