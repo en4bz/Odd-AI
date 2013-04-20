@@ -26,8 +26,8 @@ public:
     enum VALUE {WHITE, BLACK};
     enum STATE {EVEN, ODD};
 private:
-//    std::unordered_map<Point, VALUE, PointHasher> mBoard;
-	std::map<Point,VALUE> mBoard;
+	std::unordered_map<Point, VALUE, PointHasher> mBoard;
+//	std::map<Point,VALUE> mBoard;
 public:
 	void update(const Move&);
 	std::vector<Point> getNeighboursOfSameColour(const Point& p) const;
