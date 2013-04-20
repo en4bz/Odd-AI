@@ -2,35 +2,6 @@
 
 MCPlayer::MCPlayer(int pID) : Player(pID) {}
 
-/*Move MCPlayer::move(void){
-	const std::vector<Move>& lMoves = this->mCurrentState.validMoves();
-	std::vector<int> lResults;
-	lResults.reserve(lMoves.size());
-	for(const Move& m : lMoves){
-//		std::packaged_task<int(Board::STATE,Board,int)> lDispatch(&MCPlayer::simulation);//Create Task
-//		lResults.emplace_back(lDispatch.get_future());//Get Future
-		Board lNewBoard = this->mCurrentState;//Copy Board
-		lNewBoard.update(m);//Mutate Board
-		int x = simulation(this->mGoal, lNewBoard, SIMULATIONS_PER_MOVE / lMoves.size());
-		lResults.push_back(x);
-//		std::thread(std::move(lDispatch), this->mGoal, lNewBoard, SIMULATIONS_PER_MOVE / lMoves.size()).detach();//Dispatch Simulation on new thread
-	}
-	#ifdef INFO
-	std::cout << "Simulations Per Thread: " << SIMULATIONS_PER_MOVE / lMoves.size() << " | ";
-	#endif
-	int lMaxIndex = 0;
-	int lMaxValue = 0;
-	const uint32_t lResultsSize = lResults.size();
-	for(uint32_t i = 0; i < lResultsSize; i++){
-		const int lTemp = lResults[i];//.get();
-		if(lTemp > lMaxValue){
-			lMaxValue = lTemp;
-			lMaxIndex = i;
-		}
-	}
-	return lMoves[lMaxIndex];
-}*/
-
 Move MCPlayer::move(void){
 	const std::vector<Move> lMoves = this->mCurrentState.validMoves();
 	const uint32_t lThreads = THREADS < lMoves.size() ? THREADS : lMoves.size(); //std::max(THREADS , lMoves.size());

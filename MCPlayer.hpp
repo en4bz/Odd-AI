@@ -3,12 +3,11 @@
 
 #define THREADS 4
 
-#include <utility>
 #include <future>
 #include <thread>
 #include <random>
+#include <utility>
 #include <iostream>
-#include <algorithm>
 
 #include "Point.hpp"
 #include "Board.hpp"
