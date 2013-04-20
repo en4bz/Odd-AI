@@ -49,7 +49,7 @@ int AMAF2::simulation(const Board::STATE pGoalState, const Board pStartState, co
 			return i - lLosses;
 		}
 		Board lTemp = pStartState;
-		if(pGoalState != lTemp.sim(lGen()))
+		if(pGoalState != lTemp.rollout(lGen()))
 			lLosses++;
     }
 	int lLower;
