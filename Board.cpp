@@ -129,7 +129,7 @@ int Board::connectedComponent(const Point& origin, std::unordered_set<Point, Poi
 	return lSize;
 }
 
-Board::STATE Board::sim(int pSeed){
+Board::STATE Board::rollout(int pSeed){
 	std::mt19937 lGen(pSeed);
 	std::uniform_int_distribution<int> lWB(0,1);
 	for(int i = -4; i <= 4; i++){
