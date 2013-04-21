@@ -1,8 +1,6 @@
 #ifndef MCPLAYER_HPP
 #define MCPLAYER_HPP
 
-#define THREADS 4
-
 #include <future>
 #include <thread>
 #include <random>

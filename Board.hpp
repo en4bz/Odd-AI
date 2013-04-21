@@ -17,7 +17,6 @@
 #include <unordered_set>
 
 #include "Point.hpp"
-#include "BoardBoundsException.hpp"
 
 struct Move;
 

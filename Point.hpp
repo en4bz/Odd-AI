@@ -4,7 +4,10 @@
 #include <cstdlib>
 #include <ostream>
 
-#include "BoardBoundsException.hpp"
+struct BoardBoundsException{
+    int x, y;
+    BoardBoundsException(int px, int py) : x(px), y(py) {}
+};
 
 struct Point{
 	int x,y;
