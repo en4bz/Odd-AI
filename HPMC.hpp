@@ -1,5 +1,5 @@
-#ifndef MCPLAYER_HPP
-#define MCPLAYER_HPP
+#ifndef HP_MCPLAYER_HPP
+#define HP_MCPLAYER_HPP
 
 #include <future>
 #include <thread>
@@ -9,13 +9,13 @@
 #include "Point.hpp"
 #include "Board.hpp"
 #include "Player.hpp"
+#include "MCPlayer.hpp"
 
-class MCPlayer : public Player{
+class HP_MCPlayer : public Player{
 public:
 	static constexpr int SIMULATIONS_PER_MOVE = 48000;
 public:
-	MCPlayer(int);
+	HP_MCPlayer(int);
 	Move move(void);
-	static int simulation(const Board::STATE pGoalState, const Board pStartState, const int pNumSimulations);
 };
 #endif

@@ -34,14 +34,14 @@ int main(int argc, char* argv[]){
 		#ifdef _MONTECARLO_
 		MCPlayer lPlayer(lPlayerID);
 		#endif
-		#ifdef _MCP2_
+		#ifdef _PREEMPTIVE_MC_
 		MCP2 lPlayer(lPlayerID);
 		#endif
-		#ifdef _AMAF_
-		AMAFPlayer lPlayer(lPlayerID);
+		#ifdef _HP_AMAF_
+		HP_AMAFPlayer lPlayer(lPlayerID);
 		#endif
-		#ifdef _AMAF2_
-		AMAF2 lPlayer(lPlayerID);
+		#ifdef _HP_MC_
+		HP_MCPlayer lPlayer(lPlayerID);
 		#endif
 		std::cout << "Playing as " << lPlayerName << std::endl;
 		bool isOver = false;

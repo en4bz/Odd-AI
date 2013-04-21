@@ -1,5 +1,5 @@
-#ifndef MCP2_HPP
-#define MCP2_HPP
+#ifndef PREEMPTIVE_MC_HPP
+#define PREEMPTIVE_MC_HPP
 
 #include <atomic>
 #include <future>
@@ -18,6 +18,6 @@ public:
 public:
 	MCP2(int);
 	Move move(void);
-	int simulation(const Board::STATE pGoalState, const Board pStartState, const int pNumSimulations, std::atomic<int>& pLowerBound);
+	static int simulation(const Board::STATE pGoalState, const Board pStartState, const int pNumSimulations, std::atomic<int>& pLowerBound);
 };
 #endif

@@ -15,7 +15,7 @@ Move MCPlayer::move(void){
 		lSplits[i] = std::async(std::launch::async, split, lBase + i*lSegment, lBase + (i+1)*lSegment, this->mCurrentState, this->mGoal);
 	}
 	std::cout << "Rollouts: " << SIMULATIONS_PER_SPLIT / lSegment << " | ";
-	int lMaxValue = 0;
+	int lMaxValue = -1;
 	Move lMaxMove;
 	for(int i = 0; i < lThreads; i++){
 		const auto lTemp = lSplits[i].get();
@@ -29,7 +29,7 @@ Move MCPlayer::move(void){
 
 std::pair<Move,int> MCPlayer::split(std::vector<Move>::const_iterator pStart, std::vector<Move>::const_iterator pEnd, const Board currentState, const Board::STATE pGoal){
 	const int lSize = distance(pStart,pEnd);
-	int lMaxValue = 0;
+	int lMaxValue = -1;
 	Move lMaxMove;
 	for(;pStart != pEnd; pStart++){
 		Board lNewBoard = currentState;//Copy Board

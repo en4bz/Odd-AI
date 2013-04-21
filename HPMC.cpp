@@ -1,8 +1,8 @@
-#include "MCPlayer.hpp"
+#include "HPMC.hpp"
 
-MCPlayer::MCPlayer(int pID) : Player(pID) {}
+HP_MCPlayer::HP_MCPlayer(int pID) : Player(pID) {}
 
-Move MCPlayer::move(void){
+Move HP_MCPlayer::move(void){
 	const std::vector<Move>& lMoves = this->mCurrentState.validMoves();
 	std::vector<std::future<int>> lResults;
 	lResults.reserve(lMoves.size());
@@ -15,7 +15,7 @@ Move MCPlayer::move(void){
 	}
 	std::cout << "Simulations Per Thread: " << SIMULATIONS_PER_MOVE / lMoves.size() << " | ";
 	int lMaxIndex = 0;
-	int lMaxValue = 0;
+	int lMaxValue = -1;
 	const uint32_t lResultsSize = lResults.size();
 	for(uint32_t i = 0; i < lResultsSize; i++){
 		const int lTemp = lResults[i].get();
@@ -25,15 +25,4 @@ Move MCPlayer::move(void){
 		}
 	}
 	return lMoves[lMaxIndex];
-}
-
-int MCPlayer::simulation(const Board::STATE pGoalState, const Board pStartState, const int pNumSimulations){
-	std::random_device lGen;
-	int lWins = 0;
-    for(int i = 0; i < pNumSimulations; i++){
-		Board lTemp = pStartState;
-		if(pGoalState == lTemp.rollout(lGen()))
-			lWins++;
-    }
-	return lWins;
 }

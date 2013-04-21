@@ -5,28 +5,31 @@ CC_FLAGS = -Wall
 LINK = -lboost_system -lboost_timer -pthread
 CORES := $(shell nproc)
 
-MCP2 : main.hpp main.cpp MCP2.o
-	$(CC) -o MCP2 $(STD) $(OPT) $(CC_FLAGS) -D_MCP2_ \
-	main.cpp Board.o Point.o Player.o MCP2.o AMAF2.o $(LINK)
+PreemptiveMCPlayer : main.hpp main.cpp PreemptiveMC.o
+	$(CC) -o PreemptiveMCPlayer $(STD) $(OPT) $(CC_FLAGS) -D_PREEMPTIVE_MC_ \
+	main.cpp Board.o Point.o Player.o PreemptiveMC.o $(LINK)
 
 HP_AMAFPlayer : main.hpp main.cpp HP_AMAF.o MCPlayer.o
 	$(CC) -o HP_AMAFPlayer $(STD) $(OPT) $(CC_FLAGS) -D_HP_AMAF_ \
-	main.cpp Board.o Point.o MCPlayer.o Player.o AMAF.o $(LINK)
+	main.cpp Board.o Point.o MCPlayer.o Player.o HP_AMAF.o $(LINK)
 
-AMAFPlayer : main.hpp main.cpp AMAFPlayer.o MCPlayer.o
-	$(CC) -o AMAFPlayer $(STD) $(OPT) $(CC_FLAGS) -D_AMAF_ \
-	main.cpp Board.o Point.o MCPlayer.o Player.o AMAFPlayer.o $(LINK)
+HP_MCPlayer : main.hpp main.cpp MCPlayer.o HPMC.o
+	$(CC) -o HP_MCPlayer $(STD) $(OPT) $(CC_FLAGS) -D_HP_MC_ \
+	main.cpp Board.o Point.o MCPlayer.o Player.o HPMC.o $(LINK)
 
 MCPlayer : main.hpp main.cpp MCPlayer.o
 	$(CC) -o MCPlayer $(STD) $(OPT) $(CC_FLAGS) -D_MONTECARLO_ \
 	main.cpp Board.o Point.o Player.o MCPlayer.o $(LINK)
 
-MCP2.o : MCP2.hpp MCP2.cpp Player.o AMAF2.o
-	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) -DTHREADS=$(CORES) MCP2.cpp
+PreemptiveMC.o : PreemptiveMC.hpp PreemptiveMC.cpp Player.o
+	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) -DTHREADS=$(CORES) PreemptiveMC.cpp
 
-AMAFPlayer.o : AMAFPlayer.hpp AMAFPlayer.cpp Player.o
-	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) -DTHREADS=$(CORES) AMAFPlayer.cpp
-	
+HP_AMAF.o : HP_AMAF.hpp HP_AMAF.cpp Player.o MCPlayer.o
+	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) -DTHREADS=$(CORES) HP_AMAF.cpp
+
+HPMC.o : HPMC.hpp HPMC.cpp Player.o
+	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) -DTHREADS=$(CORES) HPMC.cpp
+
 MCPlayer.o : MCPlayer.hpp MCPlayer.cpp Player.o
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) -DTHREADS=$(CORES) MCPlayer.cpp
 

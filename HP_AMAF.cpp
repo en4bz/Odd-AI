@@ -1,8 +1,8 @@
-#include "AMAF.hpp"
+#include "HP_AMAF.hpp"
 
-AMAFPlayer::AMAFPlayer(int pID) : Player(pID) {}
+HP_AMAFPlayer::HP_AMAFPlayer(int pID) : Player(pID) {}
 
-Move AMAFPlayer::move(void){
+Move HP_AMAFPlayer::move(void){
 	const std::vector<Move>& lMoves = this->mCurrentState.validMoves();
 	std::vector<std::future<int>> lResults;
 	lResults.reserve(lMoves.size());
@@ -15,7 +15,7 @@ Move AMAFPlayer::move(void){
 	}
 	std::cout << "Simulations Per Thread: " << SIMULATIONS_PER_MOVE / lMoves.size() << " | ";
 	int lMaxIndex = 0;
-	int lMaxValue = 0;
+	int lMaxValue = -1;
 	const uint32_t lFutureSize = lResults.size();
 	for(uint32_t i = 0; i < lFutureSize; i++){
 		if(this->movesLeft() >= MOVES_TO_PLAY_AMAF){

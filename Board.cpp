@@ -130,6 +130,7 @@ Board::STATE Board::rollout(int pSeed){
 			const Point& p = Point(i,j);
 			if(this->mBoard.find(p) == this->mBoard.end()){
 				if(lWB(lGen) == 0)
+//				if(lGen() & 0x01)//Test if even or odd. This is indeed uniform on [0,1] and faster.
 					this->mBoard.emplace(p, VALUE::BLACK);
 				else
 					this->mBoard.emplace(p, VALUE::WHITE);
