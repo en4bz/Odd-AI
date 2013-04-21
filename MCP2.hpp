@@ -8,7 +8,6 @@
 #include <random>
 #include <iostream>
 
-#include "AMAF2.hpp"
 #include "Point.hpp"
 #include "Board.hpp"
 #include "Player.hpp"
@@ -19,5 +18,6 @@ public:
 public:
 	MCP2(int);
 	Move move(void);
+	int simulation(const Board::STATE pGoalState, const Board pStartState, const int pNumSimulations, std::atomic<int>& pLowerBound);
 };
 #endif

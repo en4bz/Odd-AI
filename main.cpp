@@ -85,17 +85,19 @@ Move processMove(ip::tcp::iostream& lStream){
 	int x,y;
 	std::string lColour;
 	lStream >> lColour >> x >> y;
-	if(lColour == "WHITE")
+	if(lColour == "WHITE"){
 		return Move(Point(x-y,y), Board::VALUE::WHITE);
-	else
+	}
+	else{
 		return Move(Point(x-y,y), Board::VALUE::BLACK);
+	}
 }
 
 void sendMove(ip::tcp::iostream& socket, int playerid, const Move& move){
-	if(move.colour == Board::VALUE::WHITE)
+	if(move.colour == Board::VALUE::WHITE){
 		socket << playerid << " WHITE " << move.place.x + move.place.y << " " << move.place.y << std::endl;
-	else
+	}
+	else{
 		socket << playerid << " BLACK " << move.place.x + move.place.y << " " << move.place.y << std::endl;
-	return;
+	}
 }
-

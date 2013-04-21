@@ -8,7 +8,7 @@ Move MCP2::move(void){
 	std::vector<std::future<int>> lResults;
 	lResults.reserve(lMoves.size());
 	for(const Move& m : lMoves){
-		std::packaged_task<int(Board::STATE,Board,int,std::atomic<int>&)> lDispatch(&AMAF2::simulation);//Create Task
+		std::packaged_task<int(Board::STATE,Board,int,std::atomic<int>&)> lDispatch(&MCP2::simulation);//Create Task
 		lResults.emplace_back(lDispatch.get_future());//Get Future
 		Board lNewBoard = this->mCurrentState;//Copy Board
 		lNewBoard.update(m);//Mutate Board
@@ -26,4 +26,22 @@ Move MCP2::move(void){
 		}
 	}
 	return lMoves[lMaxIndex];
+}
+
+int MCP2::simulation(const Board::STATE pGoalState, const Board pStartState, const int pNumSimulations, std::atomic<int>& pLowerBound){
+	std::random_device lGen;
+	int lLosses = 0;
+    for(int i = 0; i < pNumSimulations; i++){
+		if(lLosses > pLowerBound.load()){
+			return i - lLosses;
+		}
+		Board lTemp = pStartState;
+		if(pGoalState != lTemp.rollout(lGen()))
+			lLosses++;
+    }
+	int lLower;
+	do{
+		lLower = pLowerBound.load();
+	}while(lLower > lLosses && ! pLowerBound.compare_exchange_weak(lLower, lLosses));
+	return pNumSimulations - lLosses;
 }
