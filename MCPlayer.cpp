@@ -6,8 +6,9 @@ Move MCPlayer::move(void){
 	const std::vector<Move> lMoves = this->mCurrentState.validMoves();
 	const int lThreads = THREADS < lMoves.size() ? THREADS : lMoves.size();
 	const int lSegment = lMoves.size()/lThreads;
-//	assert(lMoves.cbegin() + lThreads*lSegment == lMoves.cend());
-
+	#ifndef RELEASE
+	assert(lMoves.cbegin() + lThreads*lSegment == lMoves.cend());
+	#endif
 	std::future<std::pair<Move,int>> lSplits[lThreads];
 	const std::vector<Move>::const_iterator lBase = lMoves.cbegin();
 	for(int i = 0; i < lThreads; i++){
