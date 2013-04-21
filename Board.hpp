@@ -1,10 +1,6 @@
 #ifndef BOARD_HPP
 #define BOARD_HPP
 
-#ifdef _BENCHMARK_
-#include "Profiler.hpp"
-#endif
-
 #include <map>
 #include <queue>
 #include <vector>

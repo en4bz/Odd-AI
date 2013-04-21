@@ -22,24 +22,21 @@ MCPlayer : main.hpp main.cpp MCPlayer.o
 	 main.cpp Board.o Point.o Profiler.o Player.o MCPlayer.o $(LINK)
 
 MCP2.o : MCP2.hpp MCP2.cpp Player.o AMAF2.o
-	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) MCP2.cpp
+	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) -DTHREADS=$(CORES) MCP2.cpp
 
 AMAF2.o : AMAF2.hpp AMAF2.cpp Player.o
-	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) AMAF2.cpp
+	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) -DTHREADS=$(CORES) AMAF2.cpp
 
 AMAF.o : AMAF.hpp AMAF.cpp Player.o
-	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) AMAF.cpp
+	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) -DTHREADS=$(CORES) AMAF.cpp
 	
-NegaScout.o : NegaScout.hpp NegaScout.cpp Player.o
-	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) NegaScout.cpp
-
 MCPlayer.o : MCPlayer.hpp MCPlayer.cpp Player.o
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) -DTHREADS=$(CORES) MCPlayer.cpp
 
 Player.o : Player.hpp Player.cpp Board.o
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) Player.cpp
 
-Board.o : Board.hpp Board.cpp Point.o Profiler.o
+Board.o : Board.hpp Board.cpp Point.o
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) Board.cpp
 
 Profiler.o : Profiler.hpp Profiler.cpp
