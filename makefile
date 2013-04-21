@@ -5,19 +5,19 @@ CC_FLAGS = -Wall
 LINK = -lboost_system -lboost_timer -pthread
 CORES := $(shell grep -c "processor" /proc/cpuinfo)
 
-MCP2 : main.hpp main.cpp MCP2.o
+MCP2 : main.hpp main.cpp MCP2.o Profiler.o
 	$(CC) -o MCP2 $(STD) $(OPT) $(CC_FLAGS) -D_MCP2_ \
 	 main.cpp Board.o Point.o Profiler.o Player.o MCP2.o AMAF2.o $(LINK)
 
-AMAF2 : main.hpp main.cpp AMAF2.o
+AMAF2 : main.hpp main.cpp AMAF2.o Profiler.o
 	$(CC) -o AMAF2 $(STD) $(OPT) $(CC_FLAGS) -D_AMAF2_ \
 	 main.cpp Board.o Point.o Profiler.o Player.o AMAF2.o $(LINK)
 
-AMAFPlayer : main.hpp main.cpp AMAF.o MCPlayer.o 
+AMAFPlayer : main.hpp main.cpp AMAF.o MCPlayer.o Profiler.o
 	$(CC) -o AMAFPlayer $(STD) $(OPT) $(CC_FLAGS) -D_AMAF_ \
 	 main.cpp Board.o Point.o Profiler.o MCPlayer.o Player.o AMAF.o $(LINK)
 
-MCPlayer : main.hpp main.cpp MCPlayer.o
+MCPlayer : main.hpp main.cpp MCPlayer.o Profiler.o
 	$(CC) -o MCPlayer $(STD) $(OPT) $(CC_FLAGS) -D_MONTECARLO_ \
 	 main.cpp Board.o Point.o Profiler.o Player.o MCPlayer.o $(LINK)
 

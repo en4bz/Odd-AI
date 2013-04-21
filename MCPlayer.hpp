@@ -7,7 +7,6 @@
 #include <utility>
 #include <iostream>
 
-#include "Point.hpp"
 #include "Board.hpp"
 #include "Player.hpp"
 
