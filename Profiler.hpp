@@ -1,7 +1,6 @@
 #ifndef PROFILER_HPP
 #define PROFILER_HPP
 
-#include <chrono>
 #include <string>
 #include <iostream>
 #include <boost/timer/timer.hpp>
@@ -11,8 +10,10 @@ private:
 	const std::string mMessage;
 	boost::timer::auto_cpu_timer t;
 public:
-	Profiler(const std::string);
-	friend std::ostream& operator<< (std::ostream&, const Profiler&);
+	Profiler(const std::string toDisplay) : mMessage(toDisplay) {}
+	~Profiler(){
+		std::cout << this->mMessage;
+	}
 };
 #endif
 

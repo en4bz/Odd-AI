@@ -52,8 +52,6 @@ int main(int argc, char* argv[]){
 				std::cout << " Move :" << lPlayer.movesLeft() <<  " | ";
 				const Profiler lMoveTime("Executed Move in: ");
 				sendMove(socket, lPlayerID, lPlayer.move());
-//				socket.ignore(16,' ');//Empty socket after playing. Why?
-				std::cout << lMoveTime;
 			}
 			else if(lMessage == "1" || lMessage == "2"){
 				lPlayer.updateBoard(processMove(socket));
