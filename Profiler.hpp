@@ -11,9 +11,7 @@ private:
 	boost::timer::auto_cpu_timer t;
 public:
 	Profiler(const std::string toDisplay) : mMessage(toDisplay) {}
-	~Profiler(){
-		std::cout << this->mMessage;
-	}
+	~Profiler(){ std::cout << this->mMessage;}
 };
 #endif
 
