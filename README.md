@@ -1,7 +1,7 @@
 Odd-AI
 ======
 
-An intelligent agent for playing the game Odd bases on Monte Carlo methods. 
+An intelligent agent for playing the game Odd based on Monte Carlo methods. 
 
 Information on the game:
  * http://nickbentleygames.wordpress.com/2010/02/11/one-of-my-better-games-odd/
