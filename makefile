@@ -1,7 +1,7 @@
-CC = g++-4.7
+CC = g++
 STD = -std=c++11
-OPT = -Ofast -march=native
-CC_FLAGS = -Wall
+OPT = -O3 -march=native
+CC_FLAGS = -Wall -DNDEBUG
 LINK = -lboost_system -lboost_timer -pthread
 CORES := $(shell nproc)
 
@@ -18,8 +18,7 @@ HP_MCPlayer : main.hpp main.cpp MCPlayer.o HPMC.o
 	main.cpp Board.o Point.o MCPlayer.o Player.o HPMC.o $(LINK)
 
 MCPlayer : main.hpp main.cpp MCPlayer.o
-	$(CC) -o MCPlayer $(STD) $(OPT) $(CC_FLAGS) -D_MONTECARLO_ \
-	main.cpp Board.o Point.o Player.o MCPlayer.o $(LINK)
+	$(CC) -o MCPlayer $(STD) $(OPT) $(CC_FLAGS) -D_MONTECARLO_ main.cpp Board.o Point.o Player.o MCPlayer.o $(LINK)
 
 PreemptiveMC.o : PreemptiveMC.hpp PreemptiveMC.cpp Player.o
 	$(CC) -c $(STD) $(OPT) $(CC_FLAGS) -DTHREADS=$(CORES) PreemptiveMC.cpp

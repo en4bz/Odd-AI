@@ -3,6 +3,7 @@
 
 #include <future>
 #include <thread>
+#include <chrono>
 #include <random>
 #include <utility>
 #include <iostream>
@@ -12,7 +13,7 @@
 
 class MCPlayer : public Player{
 public:
-	static constexpr int SIMULATIONS_PER_SPLIT = 30000;
+	static constexpr int SIMULATIONS_PER_SPLIT = 45000;
 public:
 	MCPlayer(int);
 	Move move(void);

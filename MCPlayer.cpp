@@ -6,15 +6,16 @@ Move MCPlayer::move(void){
 	const std::vector<Move> lMoves = this->mCurrentState.validMoves();
 	const int lThreads = THREADS < lMoves.size() ? THREADS : lMoves.size();
 	const int lSegment = lMoves.size()/lThreads;
-	#ifndef RELEASE
+
 	assert(lMoves.cbegin() + lThreads*lSegment == lMoves.cend());
-	#endif
 	std::future<std::pair<Move,int>> lSplits[lThreads];
 	const std::vector<Move>::const_iterator lBase = lMoves.cbegin();
-	for(int i = 0; i < lThreads; i++){
+	int i = 0;
+	for(; i < lThreads-1; i++){
 		//Lauch on new thread
 		lSplits[i] = std::async(std::launch::async, split, lBase + i*lSegment, lBase + (i+1)*lSegment, this->mCurrentState, this->mGoal);
 	}
+	lSplits[i] = std::async(std::launch::async, split, lBase + i*lSegment, lMoves.cend(), this->mCurrentState, this->mGoal);
 	std::cout << "Rollouts: " << SIMULATIONS_PER_SPLIT / lSegment << " | ";
 	int lMaxValue = -1;
 	Move lMaxMove;

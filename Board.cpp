@@ -62,9 +62,7 @@ std::vector<Move> Board::validMoves(void) const{
 }
 
 Board::STATE Board::boardStateEnd(void) const{
-	#ifndef RELEASE
 	assert(this->mBoard.size() == 61);
-	#endif
     int lBlackGroups = 0;
     int lWhiteGroups = 0;
     std::unordered_set<Point, PointHasher> lClosed;
